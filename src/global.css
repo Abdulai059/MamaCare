@@ -1,0 +1,61 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+
+@import "nativewind/theme";
+
+@theme {
+  /* Brand Colors */
+  --color-brand-primary: #ec1e88;
+  --color-brand-accent: #f7638f;
+  --color-brand-bg: #fdf6f8;
+
+  /* Card Accent Gradients / Solid Pastels */
+  --color-card-pink: #f7d9e3;
+  --color-card-mint: #c9e8d9;
+  --color-card-peach: #ffe2cc;
+
+  /* Surfaces */
+  --color-surface: #ffffff;
+  --color-surface-muted: #f2f4f7;
+
+  /* Text Colors */
+  --color-text-main: #1a1a1a;
+  --color-text-muted: #8a8a8a;
+
+  --spacing-0: 0px;
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+
+  --font-sans: poppins;
+  --font-sans-medium: poppinsMedium;
+  --font-sans-semibold: poppinsSemiBold;
+  --font-sans-bold: poppinsBold;
+}
+
+/* Brand Colors */
+/* --color-brand-primary: #9be2fe;
+  --color-brand-accent: #68d3f8;
+  --color-brand-bg: #f5faff; */
+
+/* Card Accent Gradients / Solid Pastels */
+/* --color-card-blue: #cfeeff;
+  --color-card-peach: #ffebd8;
+  --color-card-green: #e2f9eb; */
+
+/* Surfaces */
+/* --color-surface: #ffffff;
+  --color-surface-muted: #f2f4f7; */
+
+/* Text Colors */
+/* --color-text-main: #111827;
+  --color-text-muted: #8e9aa8; */
