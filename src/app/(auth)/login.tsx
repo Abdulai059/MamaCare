@@ -8,14 +8,17 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  StyleSheet,
+  Image,
 } from "react-native";
-import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { StorageUtils } from "../../shared/utils/storage";
+import { useAuth } from "../../shared/context/AuthContext";
+import { Colors } from "../../shared/constants/colors";
+import loginAvator from "@/assets/onboarding/login.png";
 
 const LoginScreen: React.FC = () => {
-  const router = useRouter();
+  const { setAuthToken } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -30,8 +33,7 @@ const LoginScreen: React.FC = () => {
     setIsLoading(true);
     try {
       const dummyToken = `demo_token_${Date.now()}`;
-      await StorageUtils.saveAuthToken(dummyToken);
-      router.replace("/(tabs)");
+      await setAuthToken(dummyToken);
     } catch (error) {
       console.error("Login error:", error);
       Alert.alert("Login Failed", "Please try again");
@@ -41,38 +43,49 @@ const LoginScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-pink-50">
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.surfacePink }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex-1"
+        style={{ flex: 1 }}
       >
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
         >
-          <View className="flex-1 px-6 justify-center py-12">
+          <View className="flex-1 px-6 py-12 justify-center">
             {/* Header */}
             <View className="items-center mb-10">
-              <View className="w-16 h-16 rounded-full bg-pink-100 items-center justify-center mb-4">
-                <Ionicons name="heart" size={28} color="#EC4899" />
+              <View className="w-21 h-21 rounded-full bg-pink-100 items-center justify-center mb-4">
+                <Image
+                  source={loginAvator}
+                  style={{ width: 100, height: 230 }}
+                  resizeMode="contain"
+                />
               </View>
               <Text className="text-3xl font-bold text-gray-800 mb-1">
                 MamaLink
               </Text>
-              <Text className="text-gray-500">Welcome back, we missed you</Text>
+              <Text className="text-sm text-gray-500">
+                Welcome back, we missed you
+              </Text>
             </View>
 
             {/* Email Input */}
             <View className="mb-4">
-              <Text className="text-gray-700 font-medium mb-2 ml-1">
+              <Text className="text-sm font-medium text-gray-700 mb-2 ml-1">
                 Email or Phone
               </Text>
-              <View className="flex-row items-center border border-gray-200 bg-white rounded-2xl px-4">
-                <Ionicons name="mail-outline" size={20} color="#9CA3AF" />
+              <View className="flex-row items-center border border-gray-200 bg-white rounded-full px-4">
+                <Ionicons
+                  name="mail-outline"
+                  size={20}
+                  color={Colors.textGray}
+                />
                 <TextInput
-                  className="flex-1 py-4 px-3 text-gray-800"
+                  className="flex-1 text-gray-800"
+                  style={{ paddingVertical: 16, paddingHorizontal: 16 }}
                   placeholder="you@example.com"
-                  placeholderTextColor="#9CA3AF"
+                  placeholderTextColor={Colors.textGray}
                   value={email}
                   onChangeText={setEmail}
                   editable={!isLoading}
@@ -83,20 +96,21 @@ const LoginScreen: React.FC = () => {
             </View>
 
             {/* Password Input */}
-            <View className="mb-3">
-              <Text className="text-gray-700 font-medium mb-2 ml-1">
+            <View className="mb-4">
+              <Text className="text-sm font-medium text-gray-700 mb-2 ml-1">
                 Password
               </Text>
-              <View className="flex-row items-center border border-gray-200 bg-white rounded-2xl px-4">
+              <View className="flex-row items-center border border-gray-200 bg-white rounded-full px-4">
                 <Ionicons
                   name="lock-closed-outline"
                   size={20}
-                  color="#9CA3AF"
+                  color={Colors.textGray}
                 />
                 <TextInput
-                  className="flex-1 py-4 px-3 text-gray-800"
+                  className="flex-1 text-gray-800"
+                  style={{ paddingVertical: 16, paddingHorizontal: 16 }}
                   placeholder="Enter your password"
-                  placeholderTextColor="#9CA3AF"
+                  placeholderTextColor={Colors.textGray}
                   secureTextEntry={!showPassword}
                   value={password}
                   onChangeText={setPassword}
@@ -108,7 +122,7 @@ const LoginScreen: React.FC = () => {
                   <Ionicons
                     name={showPassword ? "eye-off-outline" : "eye-outline"}
                     size={20}
-                    color="#9CA3AF"
+                    color={Colors.textGray}
                   />
                 </TouchableOpacity>
               </View>
@@ -125,18 +139,18 @@ const LoginScreen: React.FC = () => {
             <TouchableOpacity
               onPress={handleLogin}
               disabled={isLoading}
-              className={`py-4 rounded-2xl mb-6 shadow-sm ${
+              className={`py-4 rounded-full mb-6 ${
                 isLoading ? "bg-pink-300" : "bg-pink-500"
               }`}
               style={{
-                shadowColor: "#EC4899",
+                shadowColor: Colors.brandPink,
                 shadowOpacity: 0.3,
                 shadowRadius: 8,
                 shadowOffset: { width: 0, height: 4 },
                 elevation: 3,
               }}
             >
-              <Text className="text-white text-center font-semibold text-lg">
+              <Text className="text-white text-center font-semibold text-base">
                 {isLoading ? "Logging in..." : "Login"}
               </Text>
             </TouchableOpacity>

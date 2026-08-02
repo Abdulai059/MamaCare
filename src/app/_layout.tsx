@@ -1,53 +1,52 @@
 import "../global.css";
-import React, { useEffect, useState } from "react";
-import { Stack } from "expo-router";
+import React, { useEffect } from "react";
+import { Stack, useSegments, useRouter } from "expo-router";
 import { StatusBar } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { View } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import { AuthProvider, useAuth } from "../shared/context/AuthContext";
 
 SplashScreen.preventAutoHideAsync();
 
-/**
- * Root Layout
- * Handles conditional routing based on onboarding status
- */
-function RootLayoutContent(): React.JSX.Element {
-  const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
-  const [onboardingChecked, setOnboardingChecked] = useState(false);
+function RootNavigator(): React.JSX.Element {
+  const { hasSeenOnboarding, isAuthenticated, isLoading } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
 
   useEffect(() => {
-    const checkOnboarding = async () => {
-      try {
-        const completed = await AsyncStorage.getItem("hasSeenOnboarding");
-        setHasSeenOnboarding(completed === "true");
-      } catch (error) {
-        console.error("Error checking onboarding:", error);
-        setHasSeenOnboarding(false);
-      } finally {
-        setOnboardingChecked(true);
+    if (isLoading) {
+      return;
+    }
+
+    const authSegment = segments[0];
+    const screenSegment = segments[1];
+
+    if (!isAuthenticated) {
+      if (!hasSeenOnboarding) {
+        if (authSegment !== "(auth)" || screenSegment !== "onboarding") {
+          router.replace("/(auth)/onboarding");
+        }
+      } else {
+        if (authSegment !== "(auth)" || screenSegment !== "login") {
+          router.replace("/(auth)/login");
+        }
       }
-    };
+    } else {
+      if (authSegment !== "(tabs)") {
+        router.replace("/(tabs)");
+      }
+    }
+  }, [isAuthenticated, hasSeenOnboarding, isLoading, segments, router]);
 
-    checkOnboarding();
-  }, []);
-
-  if (!onboardingChecked) {
+  if (isLoading) {
     return <View style={{ flex: 1 }} />;
-  }
-
-  if (!hasSeenOnboarding) {
-    return (
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      </Stack>
-    );
   }
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
     </Stack>
   );
@@ -74,7 +73,9 @@ export default function App(): React.JSX.Element {
   return (
     <SafeAreaProvider>
       <StatusBar barStyle="dark-content" />
-      <RootLayoutContent />
+      <AuthProvider>
+        <RootNavigator />
+      </AuthProvider>
     </SafeAreaProvider>
   );
 }

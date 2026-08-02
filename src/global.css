@@ -9,6 +9,8 @@
   --color-brand-primary: #ec1e88;
   --color-brand-accent: #f7638f;
   --color-brand-bg: #fdf6f8;
+  --color-brand-pink: #ec4899;
+  --color-brand-blue: #68d3f8;
 
   /* Card Accent Gradients / Solid Pastels */
   --color-card-pink: #f7d9e3;
@@ -18,10 +20,12 @@
   /* Surfaces */
   --color-surface: #ffffff;
   --color-surface-muted: #f2f4f7;
+  --color-surface-pink: #fef2f2;
 
   /* Text Colors */
   --color-text-main: #1a1a1a;
   --color-text-muted: #8a8a8a;
+  --color-text-gray: #9ca3af;
 
   --spacing-0: 0px;
   --spacing-1: 4px;

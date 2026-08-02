@@ -5,12 +5,10 @@ import {
   Dimensions,
   Text,
   TouchableOpacity,
-  SafeAreaView,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { OnboardingCard } from "../components/OnboardingCard";
-import { useOnboardingStore } from "../../../shared/store/onboardingStore";
-import { StorageUtils } from "../../../shared/utils/storage";
+import { useAuth } from "../../../shared/context/AuthContext";
 
 const { width } = Dimensions.get("window");
 
@@ -36,10 +34,9 @@ interface OnboardingSlide {
  * - Saves onboarding status to AsyncStorage
  */
 const OnboardingScreen: React.FC = () => {
-  const router = useRouter();
+  const { setHasSeenOnboarding } = useAuth();
   const flatListRef = useRef<FlatList>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const { setOnboardingCompleted } = useOnboardingStore();
 
   const slides: OnboardingSlide[] = [
     {
@@ -93,9 +90,7 @@ const OnboardingScreen: React.FC = () => {
   // Skip onboarding and navigate to login
   const handleSkip = async () => {
     try {
-      await StorageUtils.saveOnboardingStatus(true);
-      setOnboardingCompleted(true);
-      router.replace("/(auth)/login");
+      await setHasSeenOnboarding(true);
     } catch (error) {
       console.error("Error skipping onboarding:", error);
     }
@@ -116,9 +111,7 @@ const OnboardingScreen: React.FC = () => {
   // Complete onboarding and go to login
   const handleGetStarted = async () => {
     try {
-      await StorageUtils.saveOnboardingStatus(true);
-      setOnboardingCompleted(true);
-      router.replace("/(auth)/login");
+      await setHasSeenOnboarding(true);
     } catch (error) {
       console.error("Error completing onboarding:", error);
     }

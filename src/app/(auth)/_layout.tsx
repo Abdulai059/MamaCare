@@ -1,5 +1,5 @@
-import React from 'react';
-import { Stack } from 'expo-router';
+import React from "react";
+import { Stack } from "expo-router";
 
 /**
  * Auth Layout
@@ -11,12 +11,10 @@ export default function AuthLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
-        animationEnabled: true,
       }}
     >
-      <Stack.Screen name="index" options={{ title: 'Onboarding' }} />
-      <Stack.Screen name="login" options={{ title: 'Login' }} />
-      <Stack.Screen name="onboarding" options={{ title: 'Onboarding' }} />
+      <Stack.Screen name="login" options={{ title: "Login" }} />
+      <Stack.Screen name="onboarding" options={{ title: "Onboarding" }} />
     </Stack>
   );
 }
