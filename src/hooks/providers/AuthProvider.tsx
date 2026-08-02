@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 type Profile = {
   id: string;
   full_name: string;
+  avatar_url: string | null;
   role: "CHPS_WORKER" | "SUPERVISOR" | "ADMIN";
   district_id: string | null;
   chps_compound_id: string | null;
