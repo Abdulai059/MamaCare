@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
-import { fetchProfile } from "@/services/auth";
+import { getProfile } from "@/services/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Profile = {
   id: string;
@@ -10,6 +10,8 @@ type Profile = {
   role: "CHPS_WORKER" | "SUPERVISOR" | "ADMIN";
   district_id: string | null;
   chps_compound_id: string | null;
+  districts: { name: string } | null;
+  chps_compounds: { name: string } | null;
 };
 
 interface AuthContextType {
@@ -40,7 +42,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const loadProfile = async (currentSession: Session | null) => {
     if (currentSession) {
       try {
-        const p = await fetchProfile(currentSession.user.id);
+        const p = await getProfile(currentSession.user.id);
         setProfile(p);
       } catch (error) {
         console.error("Error fetching profile:", error);

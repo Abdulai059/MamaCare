@@ -6,12 +6,18 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { View } from "react-native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { AuthProvider, useAuth } from "../shared/context/AuthContext";
+import { setupOnlineManager } from "@/hooks/query/useOnlineManager";
+import { useAppState } from "@/hooks/query/useAppState";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
+import { AuthProvider, useAuth } from "@/hooks/providers/AuthProvider";
 
 SplashScreen.preventAutoHideAsync();
 
+setupOnlineManager();
+
 function RootNavigator(): React.JSX.Element {
-  const { hasSeenOnboarding, isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, hasSeenOnboarding } = useAuth();
   const segments = useSegments();
   const router = useRouter();
 
@@ -53,6 +59,8 @@ function RootNavigator(): React.JSX.Element {
 }
 
 export default function App(): React.JSX.Element {
+  useAppState();
+
   const [fontsLoaded] = useFonts({
     Poppins_400Regular: require("../../assets/fonts/poppins.regular.ttf"),
     Poppins_500Medium: require("../../assets/fonts/poppins.medium.ttf"),
@@ -71,11 +79,13 @@ export default function App(): React.JSX.Element {
   }
 
   return (
-    <SafeAreaProvider>
-      <StatusBar barStyle="dark-content" />
-      <AuthProvider>
-        <RootNavigator />
-      </AuthProvider>
-    </SafeAreaProvider>
+    <QueryClientProvider client={queryClient}>
+      <SafeAreaProvider>
+        <StatusBar barStyle="dark-content" />
+        <AuthProvider>
+          <RootNavigator />
+        </AuthProvider>
+      </SafeAreaProvider>
+    </QueryClientProvider>
   );
 }

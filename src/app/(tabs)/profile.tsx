@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { Text, View, TouchableOpacity, Alert, ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useAuth } from "../../shared/context/AuthContext";
+import { Text, View, TouchableOpacity, Alert } from "react-native";
+import { useAuth } from "@/hooks/providers/AuthProvider";
 import { ScreenScrollView } from "@/shared/context/ScreenScrollView";
 
 export default function ProfileScreen(): React.JSX.Element {
-  const { clearAuthToken } = useAuth();
+  const { profile, session, signOut } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogout = async () => {
@@ -16,7 +15,7 @@ export default function ProfileScreen(): React.JSX.Element {
         onPress: async () => {
           setIsLoading(true);
           try {
-            await clearAuthToken();
+            await signOut();
           } catch (error) {
             console.error("Logout error:", error);
             Alert.alert("Error", "Failed to logout");
@@ -37,18 +36,32 @@ export default function ProfileScreen(): React.JSX.Element {
       <View className="bg-gray-50 rounded-lg p-6 mb-8">
         <View className="mb-6">
           <Text className="text-sm text-gray-500 mb-1">Name</Text>
-          <Text className="text-lg font-semibold text-gray-800">Demo User</Text>
+          <Text className="text-lg font-semibold text-gray-800">
+            {profile?.full_name ?? "—"}
+          </Text>
         </View>
         <View className="mb-6">
           <Text className="text-sm text-gray-500 mb-1">Role</Text>
           <Text className="text-lg font-semibold text-gray-800">
-            CHPS Worker
+            {profile?.role ?? "—"}
+          </Text>
+        </View>
+        <View className="mb-6">
+          <Text className="text-sm text-gray-500 mb-1">Email</Text>
+          <Text className="text-lg font-semibold text-gray-800">
+            {session?.user?.email ?? "—"}
+          </Text>
+        </View>
+        <View className="mb-6">
+          <Text className="text-sm text-gray-500 mb-1">District</Text>
+          <Text className="text-lg font-semibold text-gray-800">
+            {profile?.districts?.name ?? "Not assigned"}
           </Text>
         </View>
         <View className="mb-0">
           <Text className="text-sm text-gray-500 mb-1">Facility</Text>
           <Text className="text-lg font-semibold text-gray-800">
-            Lamashegu CHPS
+            {profile?.chps_compounds?.name ?? "No Facility Assigned"}
           </Text>
         </View>
       </View>

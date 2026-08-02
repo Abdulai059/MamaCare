@@ -5,22 +5,16 @@ import {
   Dimensions,
   Text,
   TouchableOpacity,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { OnboardingCard } from "../components/OnboardingCard";
-import { useAuth } from "../../../shared/context/AuthContext";
+import { useAuth } from "@/hooks/providers/AuthProvider";
+import { slides } from "@/shared/constants/slides";
 
 const { width } = Dimensions.get("window");
 
-interface OnboardingSlide {
-  id: string;
-  title: string;
-  description: string;
-  image: any;
-  backgroundColor: string;
-  accentColor: string; // NEW - solid accent to match the bg tint
-  accentColorLight: string; // NEW - for inactive dots
-}
 /**
  * OnboardingScreen Component
  * Main onboarding flow with swipeable carousel, pagination, and navigation buttons
@@ -38,56 +32,20 @@ const OnboardingScreen: React.FC = () => {
   const flatListRef = useRef<FlatList>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const slides: OnboardingSlide[] = [
-    {
-      id: "1",
-      title: "Track Every Moment",
-      description:
-        "Monitor every step of your pregnancy journey with MamaLink's intelligent care tracking system.",
-      image: require("../../../../assets/onboarding/slide1.png"),
-      backgroundColor: "bg-pink-50",
-      accentColor: "bg-pink-500",
-      accentColorLight: "text-pink-500",
-    },
-    {
-      id: "2",
-      title: "Detect Early",
-      description:
-        "Our AI identifies health risks early, helping you and your health worker stay proactive about your care.",
-      image: require("../../../../assets/onboarding/slide2.png"),
-      backgroundColor: "bg-blue-50",
-      accentColor: "bg-blue-500",
-      accentColorLight: "text-blue-500",
-    },
-    {
-      id: "3",
-      title: "Smart Guidance",
-      description:
-        "Receive personalized recommendations in your local language, making healthcare guidance easy to understand.",
-      image: require("../../../../assets/onboarding/slide3.png"),
-      backgroundColor: "bg-green-50",
-      accentColor: "bg-green-500",
-      accentColorLight: "text-green-500",
-    },
-    {
-      id: "4",
-      title: "Join MamaLink",
-      description:
-        "Be part of a care coordination platform that keeps you and your baby connected to essential healthcare at every stage.",
-      image: require("../../../../assets/onboarding/slide4.png"),
-      backgroundColor: "bg-purple-50",
-      accentColor: "bg-purple-500",
-      accentColorLight: "text-purple-500",
-    },
-  ];
-  // Handle scroll end to update current index
-  const handleScroll = (event: any) => {
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
-    const currentIndex = Math.round(contentOffsetX / width);
-    setCurrentIndex(currentIndex);
+    const newIndex = Math.round(contentOffsetX / width);
+    setCurrentIndex(newIndex);
   };
 
-  // Skip onboarding and navigate to login
+  const handleMomentumScrollEnd = (
+    event: NativeSyntheticEvent<NativeScrollEvent>,
+  ) => {
+    const contentOffsetX = event.nativeEvent.contentOffset.x;
+    const newIndex = Math.round(contentOffsetX / width);
+    setCurrentIndex(newIndex);
+  };
+
   const handleSkip = async () => {
     try {
       await setHasSeenOnboarding(true);
@@ -96,7 +54,6 @@ const OnboardingScreen: React.FC = () => {
     }
   };
 
-  // Go to next slide or finish
   const handleNext = () => {
     if (currentIndex === slides.length - 1) {
       handleGetStarted();
@@ -108,7 +65,6 @@ const OnboardingScreen: React.FC = () => {
     }
   };
 
-  // Complete onboarding and go to login
   const handleGetStarted = async () => {
     try {
       await setHasSeenOnboarding(true);
@@ -120,10 +76,20 @@ const OnboardingScreen: React.FC = () => {
   const isLastSlide = currentIndex === slides.length - 1;
 
   return (
-    <SafeAreaView className={`flex-1 ${slides[currentIndex].backgroundColor}`}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: slides[currentIndex].backgroundColorHex,
+      }}
+    >
       <FlatList
         ref={flatListRef}
         data={slides}
+        style={{ flex: 1 }}
+        removeClippedSubviews={false}
+        initialNumToRender={slides.length}
+        maxToRenderPerBatch={slides.length}
+        windowSize={slides.length}
         renderItem={({ item }) => (
           <OnboardingCard
             title={item.title}
@@ -136,10 +102,15 @@ const OnboardingScreen: React.FC = () => {
         horizontal
         pagingEnabled
         scrollEnabled
-        snapToAlignment="center"
         scrollEventThrottle={16}
         onScroll={handleScroll}
+        onMomentumScrollEnd={handleMomentumScrollEnd}
         showsHorizontalScrollIndicator={false}
+        getItemLayout={(_, index) => ({
+          length: width,
+          offset: width * index,
+          index,
+        })}
       />
 
       <View className="px-6 py-8">

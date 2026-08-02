@@ -13,12 +13,12 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useAuth } from "../../shared/context/AuthContext";
+import { useAuth } from "@/hooks/providers/AuthProvider";
 import { Colors } from "../../shared/constants/colors";
 import loginAvator from "@/assets/onboarding/login.png";
 
 const LoginScreen: React.FC = () => {
-  const { setAuthToken } = useAuth();
+  const { signIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -32,11 +32,11 @@ const LoginScreen: React.FC = () => {
 
     setIsLoading(true);
     try {
-      const dummyToken = `demo_token_${Date.now()}`;
-      await setAuthToken(dummyToken);
-    } catch (error) {
+      await signIn(email.trim(), password);
+      // navigation happens automatically via RootNavigator watching isAuthenticated
+    } catch (error: any) {
       console.error("Login error:", error);
-      Alert.alert("Login Failed", "Please try again");
+      Alert.alert("Login Failed", error?.message ?? "Please try again");
     } finally {
       setIsLoading(false);
     }
