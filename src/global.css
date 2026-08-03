@@ -6,7 +6,7 @@
 
 @theme {
   /* Brand Colors */
-  --color-brand-primary: #ec1e88;
+  --color-brand-primary: #f259ce;
   --color-brand-accent: #f7638f;
   --color-brand-bg: #fdf6f8;
   --color-brand-pink: #ec4899;
@@ -23,9 +23,9 @@
   --color-surface-pink: #fef2f2;
 
   /* Text Colors */
-  --color-text-main: #1a1a1a;
-  --color-text-muted: #8a8a8a;
-  --color-text-gray: #9ca3af;
+  --color-main: #1a1a1a;
+  --color-muted: #8a8a8a;
+  --color-gray: #9ca3af;
 
   --spacing-0: 0px;
   --spacing-1: 4px;

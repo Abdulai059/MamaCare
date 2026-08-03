@@ -20,6 +20,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="households"
+        options={{
+          title: "Households",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="mothers"
         options={{
           title: "Mothers",
@@ -37,15 +46,7 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="alerts"
-        options={{
-          title: "Alerts",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="notifications" size={size} color={color} />
-          ),
-        }}
-      />
+
       <Tabs.Screen
         name="profile"
         options={{
@@ -57,4 +58,16 @@ export default function TabLayout() {
       />
     </Tabs>
   );
+}
+
+{
+  /* <Tabs.Screen
+        name="alerts"
+        options={{
+          title: "Alerts",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="notifications" size={size} color={color} />
+          ),
+        }}
+      /> */
 }
