@@ -13,7 +13,19 @@ export async function getHouseholds() {
 export async function getHouseholdById(id: string) {
   const { data, error } = await supabase
     .from("households")
-    .select("*, communities(name), persons(*)")
+    .select(
+      `
+      *,
+      communities (
+        name,
+        districts (
+          id,
+          name
+        )
+      ),
+      persons (*)
+    `,
+    )
     .eq("id", id)
     .single();
 

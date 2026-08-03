@@ -9,75 +9,11 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
-import { queryKeys } from "@/lib/queryKeys";
-
-// --- API (inline for now, move to api/persons.ts) ---
-async function fetchAllMothers() {
-  const { data, error } = await supabase
-    .from("persons")
-    .select("*, households(household_code, communities(name))")
-    .eq("role", "MOTHER")
-    .order("created_at", { ascending: false });
-
-  if (error) throw error;
-  return data;
-}
-
-function useAllMothers() {
-  return useQuery({
-    queryKey: [...queryKeys.persons(), "all-mothers"],
-    queryFn: fetchAllMothers,
-  });
-}
-
-// --- Stat card ---
-interface StatCardProps {
-  label: string;
-  value: string | number;
-  icon: keyof typeof Ionicons.glyphMap;
-  colors: [string, string];
-}
-
-function StatCard({ label, value, icon, colors }: StatCardProps) {
-  return (
-    <LinearGradient
-      colors={colors}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={{
-        width: 140,
-        borderRadius: 20,
-        padding: 16,
-        marginRight: 12,
-        justifyContent: "space-between",
-        height: 120,
-      }}
-    >
-      <View className="w-9 h-9 rounded-full bg-white/25 items-center justify-center">
-        <Ionicons name={icon} size={18} color="#fff" />
-      </View>
-      <View>
-        <Text
-          className="text-white text-2xl"
-          style={{ fontFamily: "poppinsBold" }}
-        >
-          {value}
-        </Text>
-        <Text
-          className="text-white/85 text-xs mt-0.5"
-          style={{ fontFamily: "poppinsMedium" }}
-        >
-          {label}
-        </Text>
-      </View>
-    </LinearGradient>
-  );
-}
+import { useAllMothers } from "@/hooks/query/usePersons";
+import StatCard from "@/features/ui/StatCard";
+import Row from "@/features/ui/Row";
 
 // --- Add mother card (matches stat card sizing, sits in the same scroll) ---
 function AddMotherCard({ onPress }: { onPress: () => void }) {
@@ -104,86 +40,6 @@ function AddMotherCard({ onPress }: { onPress: () => void }) {
       >
         Add Mother
       </Text>
-    </TouchableOpacity>
-  );
-}
-
-// --- Mother list row ---
-interface MotherRowProps {
-  name: string;
-  community?: string;
-  isPregnant: boolean;
-  age?: number;
-  onPress: () => void;
-}
-
-function MotherRow({
-  name,
-  community,
-  isPregnant,
-  age,
-  onPress,
-}: MotherRowProps) {
-  const initials = name
-    .split(" ")
-    .map((n) => n[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      activeOpacity={0.6}
-      className="flex-row items-center bg-surface rounded-2xl p-4 mb-3"
-      style={{
-        shadowColor: "#000",
-        shadowOpacity: 0.04,
-        shadowRadius: 8,
-        shadowOffset: { width: 0, height: 2 },
-        elevation: 1,
-      }}
-    >
-      <View className="w-12 h-12 rounded-full bg-card-pink items-center justify-center mr-3">
-        <Text
-          className="text-brand-primary text-base"
-          style={{ fontFamily: "poppinsSemiBold" }}
-        >
-          {initials}
-        </Text>
-      </View>
-
-      <View className="flex-1">
-        <Text
-          className="text-text-main text-base"
-          style={{ fontFamily: "poppinsSemiBold" }}
-        >
-          {name}
-        </Text>
-        <View className="flex-row items-center mt-0.5">
-          <Ionicons name="location-outline" size={12} color="#9ca3af" />
-          <Text
-            className="text-text-muted text-xs ml-1"
-            style={{ fontFamily: "poppins" }}
-          >
-            {community ?? "No community"}
-            {age ? ` • ${age} yrs` : ""}
-          </Text>
-        </View>
-      </View>
-
-      {isPregnant && (
-        <View className="bg-card-mint rounded-full px-3 py-1 mr-2">
-          <Text
-            className="text-emerald-700 text-xs"
-            style={{ fontFamily: "poppinsSemiBold" }}
-          >
-            Pregnant
-          </Text>
-        </View>
-      )}
-
-      <Ionicons name="chevron-forward" size={18} color="#c4c4c4" />
     </TouchableOpacity>
   );
 }
@@ -229,6 +85,7 @@ export default function MothersScreen(): React.JSX.Element {
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 24 }}
+        style={{ flexGrow: 0 }}
         className="mb-6"
       >
         <StatCard
@@ -293,7 +150,7 @@ export default function MothersScreen(): React.JSX.Element {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 24 }}
             renderItem={({ item }) => (
-              <MotherRow
+              <Row
                 name={`${item.first_name} ${item.last_name ?? ""}`.trim()}
                 community={item.households?.communities?.name}
                 isPregnant={item.is_pregnant}

@@ -46,6 +46,14 @@
   --font-sans-bold: poppinsBold;
 }
 
+@layer utilities {
+  .shadow-card {
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+    /* React Native specific property for Android shadow */
+    elevation: 2;
+  }
+}
+
 /* Brand Colors */
 /* --color-brand-primary: #9be2fe;
   --color-brand-accent: #68d3f8;

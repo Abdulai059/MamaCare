@@ -6,8 +6,9 @@ export function useCreateHousehold() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: createHousehold,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.householdsList() });
+      return data;
     },
   });
 }

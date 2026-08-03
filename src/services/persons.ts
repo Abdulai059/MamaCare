@@ -1,5 +1,16 @@
 import { supabase } from "@/lib/supabase";
 
+export async function getAllMothers() {
+  const { data, error } = await supabase
+    .from("persons")
+    .select("*, households(household_code, communities(name))")
+    .eq("role", "MOTHER")
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data;
+}
+
 export async function getMothersByHousehold(householdId: string) {
   const { data, error } = await supabase
     .from("persons")
@@ -16,7 +27,7 @@ export async function registerMother(input: {
   household_id: string;
   first_name: string;
   last_name?: string;
-  date_of_birth?: string;
+  date_of_birth?: string | null;
   phone?: string;
   preferred_language?: string;
   is_pregnant?: boolean;

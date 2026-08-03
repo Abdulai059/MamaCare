@@ -59,10 +59,10 @@ export function SelectField({
         style={
           !disabled
             ? {
-                borderWidth: 1.5,
-                borderColor: value ? "#ec1e88" : "#EEF0F3",
+                borderWidth: 1,
+                borderColor: value ? "#f7d9e3" : "#EEF0F3",
                 shadowColor: "#000",
-                shadowOpacity: 0.04,
+                shadowOpacity: 0.02,
                 shadowRadius: 6,
                 shadowOffset: { width: 0, height: 2 },
                 elevation: 1,

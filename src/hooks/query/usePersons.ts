@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getMothersByHousehold } from "@/services/persons";
+import { getAllMothers, getMothersByHousehold } from "@/services/persons";
 import { queryKeys } from "@/lib/queryKeys";
 
 export function useMothersByHousehold(householdId: string) {
@@ -9,3 +9,13 @@ export function useMothersByHousehold(householdId: string) {
     enabled: !!householdId,
   });
 }
+
+
+ 
+export function useAllMothers() {
+  return useQuery({
+    queryKey: [...queryKeys.persons(), "all-mothers"],
+    queryFn: getAllMothers,
+  });
+}
+ 
