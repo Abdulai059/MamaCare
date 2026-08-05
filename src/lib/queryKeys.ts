@@ -24,9 +24,27 @@ export const queryKeys = {
   pregnanciesList: () => [...queryKeys.pregnancies(), "list"] as const,
   pregnancyDetail: (id: string) => [...queryKeys.pregnancies(), id] as const,
 
+  episodes: () => [...queryKeys.all, "episodes"] as const,
+  episodesList: (personId: string) =>
+    [...queryKeys.episodes(), "person", personId] as const,
+  episodeDetail: (episodeId: string) =>
+    [...queryKeys.episodes(), episodeId] as const,
+  activeEpisodes: (personId: string) =>
+    [...queryKeys.episodes(), "active", personId] as const,
+
+  milestones: () => [...queryKeys.all, "milestones"] as const,
+  milestonesByEpisode: (episodeId: string) =>
+    [...queryKeys.milestones(), "episode", episodeId] as const,
+  milestoneDetail: (milestoneId: string) =>
+    [...queryKeys.milestones(), milestoneId] as const,
+  overdueMilestones: (personId: string) =>
+    [...queryKeys.milestones(), "overdue", personId] as const,
+
   careJourney: () => [...queryKeys.all, "careJourney"] as const,
   careJourneyDetail: (pregnancyId: string) =>
     [...queryKeys.careJourney(), pregnancyId] as const,
+  pregnancyEpisode: (personId: string) =>
+    [...queryKeys.careJourney(), "pregnancy", personId] as const,
 
   assessments: () => [...queryKeys.all, "assessments"] as const,
   assessmentsList: (pregnancyId: string) =>
