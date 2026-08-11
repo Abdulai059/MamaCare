@@ -4,7 +4,12 @@ This is the React Native mobile application for MamaLink - an AI-powered Care Co
 
 ## Project Overview
 
+<<<<<<< HEAD
 MamaLink is a Care Coordination Platform that helps CHPS workers proactively manage maternal and newborn care in Ghana. For full project documentation, see the [main documentation directory](../docs/).
+=======
+
+1. Install dependencies.
+>>>>>>> 12c2178d850ef5eb423be4344ac210264dd7b0da
 
 ## Technology Stack
 
