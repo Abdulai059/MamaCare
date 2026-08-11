@@ -1,8 +1,8 @@
-// app/(tabs)/households/[id]/register-mother.tsx
 import React, { useState } from "react";
 import {
   View,
   Text,
+  TextInput,
   TouchableOpacity,
   Alert,
   ScrollView,
@@ -17,8 +17,9 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import InputField from "@/features/ui/InputField";
 
 export default function RegisterMotherScreen() {
-  const { id: householdId } = useLocalSearchParams<{ id: string }>();
+  const { householdId } = useLocalSearchParams<{ householdId: string }>();
   const router = useRouter();
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
@@ -26,6 +27,10 @@ export default function RegisterMotherScreen() {
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isPregnant, setIsPregnant] = useState(false);
+  const [lmpDate, setLmpDate] = useState<Date | null>(null);
+  const [eddDate, setEddDate] = useState<Date | null>(null);
+  const [showLmpPicker, setShowLmpPicker] = useState(false);
+  const [showEddPicker, setShowEddPicker] = useState(false);
 
   const { mutate: registerMother, isPending } = useRegisterMother(householdId);
 
@@ -36,16 +41,38 @@ export default function RegisterMotherScreen() {
       year: "numeric",
     });
 
-  const handleDateChange = (event: any, selectedDate?: Date) => {
+  const handleDateOfBirthChange = (_event: any, selectedDate?: Date) => {
     setShowDatePicker(Platform.OS === "ios");
     if (selectedDate) {
       setDateOfBirth(selectedDate);
     }
   };
 
+  const handleLmpChange = (_event: any, selectedDate?: Date) => {
+    setShowLmpPicker(Platform.OS === "ios");
+    if (selectedDate) {
+      setLmpDate(selectedDate);
+      const edd = new Date(selectedDate);
+      edd.setDate(edd.getDate() + 280);
+      setEddDate(edd);
+    }
+  };
+
+  const handleEddChange = (_event: any, selectedDate?: Date) => {
+    setShowEddPicker(Platform.OS === "ios");
+    if (selectedDate) {
+      setEddDate(selectedDate);
+    }
+  };
+
   const handleSubmit = () => {
     if (!firstName.trim()) {
       Alert.alert("Validation", "First name is required");
+      return;
+    }
+
+    if (isPregnant && (!lmpDate || !eddDate)) {
+      Alert.alert("Validation", "Please enter LMP and EDD dates for pregnancy");
       return;
     }
 
@@ -58,24 +85,26 @@ export default function RegisterMotherScreen() {
         preferred_language: preferredLanguage,
         date_of_birth: dateOfBirth
           ? dateOfBirth.toISOString().split("T")[0]
-          : null,
+          : undefined,
         is_pregnant: isPregnant,
+        lmp_date: lmpDate ? lmpDate.toISOString().split("T")[0] : undefined,
+        edd_date: eddDate ? eddDate.toISOString().split("T")[0] : undefined,
       },
       {
         onSuccess: () => {
-          Alert.alert("Success", "Mother registered");
-          router.replace(`/households/${householdId}`);
+          Alert.alert("Success", "Mother registered with care journey created!");
+          router.replace("/mothers");
         },
-        onError: (error) => {
+        onError: (error: any) => {
           Alert.alert("Error", error.message);
         },
-      },
+      }
     );
   };
 
   return (
     <View className="flex-1 bg-surface-bg">
-      {/* Gradient header */}
+      {/* Header */}
       <LinearGradient
         colors={["#ffe2cc", "#c9e8d9"]}
         start={{ x: 0, y: 0 }}
@@ -123,7 +152,7 @@ export default function RegisterMotherScreen() {
         contentContainerStyle={{ paddingTop: 24, paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Mother details section */}
+        {/* Mother details */}
         <View
           className="bg-white rounded-3xl p-5 mb-5"
           style={{
@@ -204,7 +233,7 @@ export default function RegisterMotherScreen() {
               mode="date"
               display={Platform.OS === "ios" ? "spinner" : "default"}
               maximumDate={new Date()}
-              onChange={handleDateChange}
+              onChange={handleDateOfBirthChange}
             />
           )}
 
@@ -231,6 +260,105 @@ export default function RegisterMotherScreen() {
           </View>
         </View>
 
+        {/* Pregnancy details (conditional) */}
+        {isPregnant && (
+          <View
+            className="bg-white rounded-3xl p-5 mb-5"
+            style={{
+              shadowColor: "#000",
+              shadowOpacity: 0.05,
+              shadowRadius: 12,
+              shadowOffset: { width: 0, height: 4 },
+              elevation: 2,
+            }}
+          >
+            <View className="flex-row items-center mb-4">
+              <Ionicons name="calendar-outline" size={16} color="#ec1e88" />
+              <Text
+                className="text-brand-primary text-sm ml-2"
+                style={{ fontFamily: "poppinsSemiBold" }}
+              >
+                PREGNANCY DATES
+              </Text>
+            </View>
+
+            {/* LMP */}
+            <Text
+              className="text-text-muted text-sm mb-2"
+              style={{ fontFamily: "poppinsMedium" }}
+            >
+              Last Menstrual Period (LMP)
+            </Text>
+            <TouchableOpacity
+              onPress={() => setShowLmpPicker(true)}
+              className="flex-row items-center rounded-2xl px-4 py-3 mb-4"
+              style={{ backgroundColor: "#f2f4f7" }}
+            >
+              <Ionicons name="calendar-outline" size={18} color="#9ca3af" />
+              <Text
+                className="ml-3 text-base"
+                style={{
+                  fontFamily: "poppins",
+                  color: lmpDate ? "#1a1a1a" : "#9ca3af",
+                }}
+              >
+                {lmpDate ? formatDate(lmpDate) : "Select LMP date"}
+              </Text>
+            </TouchableOpacity>
+
+            {showLmpPicker && (
+              <DateTimePicker
+                value={lmpDate || new Date(2024, 0, 1)}
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"}
+                maximumDate={new Date()}
+                onChange={handleLmpChange}
+              />
+            )}
+
+            {/* EDD */}
+            <Text
+              className="text-text-muted text-sm mb-2"
+              style={{ fontFamily: "poppinsMedium" }}
+            >
+              Estimated Delivery Date (EDD)
+            </Text>
+            <TouchableOpacity
+              onPress={() => setShowEddPicker(true)}
+              className="flex-row items-center rounded-2xl px-4 py-3 mb-4"
+              style={{ backgroundColor: "#f2f4f7" }}
+            >
+              <Ionicons name="calendar-outline" size={18} color="#9ca3af" />
+              <Text
+                className="ml-3 text-base"
+                style={{
+                  fontFamily: "poppins",
+                  color: eddDate ? "#1a1a1a" : "#9ca3af",
+                }}
+              >
+                {eddDate ? formatDate(eddDate) : "Auto-calculated from LMP"}
+              </Text>
+            </TouchableOpacity>
+
+            {showEddPicker && (
+              <DateTimePicker
+                value={eddDate || new Date()}
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"}
+                minimumDate={new Date()}
+                onChange={handleEddChange}
+              />
+            )}
+
+            <Text
+              className="text-xs text-gray-400 mt-2"
+              style={{ fontFamily: "poppins" }}
+            >
+              LMP will automatically calculate EDD (280 days)
+            </Text>
+          </View>
+        )}
+
         {/* Submit */}
         <TouchableOpacity
           onPress={handleSubmit}
@@ -238,7 +366,7 @@ export default function RegisterMotherScreen() {
           activeOpacity={0.85}
           className="rounded-full overflow-hidden"
           style={{
-            shadowColor: "#ec1e88",
+            shadowColor: "#f259ce",
             shadowOpacity: 0.35,
             shadowRadius: 12,
             shadowOffset: { width: 0, height: 6 },
@@ -246,7 +374,7 @@ export default function RegisterMotherScreen() {
           }}
         >
           <LinearGradient
-            colors={isPending ? ["#f4a8c6", "#f6b8ce"] : ["#ec1e88", "#f7638f"]}
+            colors={isPending ? ["#f4a8c6", "#f6b8ce"] : ["#f259ce", "#f7638f"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={{

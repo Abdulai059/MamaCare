@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Alert, ScrollView } from "react-native";
-import { useRouter } from "expo-router";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCreateHousehold } from "@/hooks/mutations/useCreateHousehold";
 import {
   useCommunities,
@@ -18,6 +26,7 @@ interface Option {
 
 export default function CreateHouseholdScreen() {
   const router = useRouter();
+  const { fromMother } = useLocalSearchParams<{ fromMother?: string }>();
   const [community, setCommunity] = useState<Option | null>(null);
   const [compound, setCompound] = useState<Option | null>(null);
   const [householdCode, setHouseholdCode] = useState("");
@@ -32,10 +41,7 @@ export default function CreateHouseholdScreen() {
 
   const handleSubmit = () => {
     if (!community || !compound) {
-      Alert.alert(
-        "Missing info",
-        "Please select a community and CHPS compound.",
-      );
+      Alert.alert("Missing info", "Please select a community and CHPS compound");
       return;
     }
 
@@ -49,18 +55,27 @@ export default function CreateHouseholdScreen() {
       },
       {
         onSuccess: (household) => {
-          router.replace(`/households/${household.id}`);
+          if (fromMother) {
+            // Navigate to mother registration
+            router.push({
+              pathname: "/mothers/create/mother",
+              params: { householdId: household.id },
+            });
+          } else {
+            // Navigate back to mothers list
+            router.back();
+          }
         },
         onError: (error: any) => {
           Alert.alert("Error", error.message);
         },
-      },
+      }
     );
   };
 
   return (
     <View className="flex-1 bg-surface-bg">
-      {/* Gradient header */}
+      {/* Header */}
       <LinearGradient
         colors={["#ffe2cc", "#c9e8d9"]}
         start={{ x: 0, y: 0 }}
@@ -97,7 +112,7 @@ export default function CreateHouseholdScreen() {
               className="text-gray text-sm"
               style={{ fontFamily: "poppins" }}
             >
-              Register a household in the registry
+              Register a household
             </Text>
           </View>
         </View>
@@ -108,7 +123,7 @@ export default function CreateHouseholdScreen() {
         contentContainerStyle={{ paddingTop: 24, paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Location section */}
+        {/* Location */}
         <View
           className="bg-white rounded-3xl p-5 mb-5"
           style={{
@@ -143,9 +158,7 @@ export default function CreateHouseholdScreen() {
 
           <SelectField
             label="CHPS Compound"
-            placeholder={
-              community ? "Select a compound" : "Select a community first"
-            }
+            placeholder={community ? "Select a compound" : "Select a community first"}
             value={compound}
             options={compounds}
             icon="medkit-outline"
@@ -154,7 +167,7 @@ export default function CreateHouseholdScreen() {
           />
         </View>
 
-        {/* Household details section */}
+        {/* Details */}
         <View
           className="bg-white rounded-3xl p-5 mb-5"
           style={{
@@ -201,7 +214,7 @@ export default function CreateHouseholdScreen() {
         {/* Submit */}
         <TouchableOpacity
           onPress={handleSubmit}
-          disabled={isPending}
+          disabled={isPending || !isValid}
           activeOpacity={0.85}
           className="rounded-full overflow-hidden"
           style={{
@@ -235,7 +248,7 @@ export default function CreateHouseholdScreen() {
               className="text-white text-base"
               style={{ fontFamily: "poppinsSemiBold" }}
             >
-              {isPending ? "Saving Household..." : "Create Household"}
+              {isPending ? "Saving..." : fromMother ? "Next: Add Mother" : "Create Household"}
             </Text>
           </LinearGradient>
         </TouchableOpacity>

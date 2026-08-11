@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useAllMothers } from "@/hooks/query/usePersons";
+import { useHouseholds } from "@/hooks/query/useHouseholds";
 import StatCard from "@/features/ui/StatCard";
 import Row from "@/features/ui/Row";
 
@@ -48,6 +49,7 @@ export default function MothersScreen(): React.JSX.Element {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const { data: mothers, isLoading, isError } = useAllMothers();
+  const { data: households = [] } = useHouseholds();
 
   const filtered = mothers?.filter((m) =>
     `${m.first_name} ${m.last_name ?? ""}`
@@ -57,6 +59,7 @@ export default function MothersScreen(): React.JSX.Element {
 
   const totalMothers = mothers?.length ?? 0;
   const pregnantCount = mothers?.filter((m) => m.is_pregnant).length ?? 0;
+  const totalHouseholds = households.length;
 
   return (
     <SafeAreaView
@@ -89,6 +92,12 @@ export default function MothersScreen(): React.JSX.Element {
         className="mb-6"
       >
         <StatCard
+          label="Households"
+          value={totalHouseholds}
+          icon="home-outline"
+          colors={["#fbbf24", "#f59e0b"]}
+        />
+        <StatCard
           label="Total Mothers"
           value={totalMothers}
           icon="people-outline"
@@ -100,13 +109,7 @@ export default function MothersScreen(): React.JSX.Element {
           icon="heart-outline"
           colors={["#68d3f8", "#4fb8e8"]}
         />
-        <StatCard
-          label="High Risk"
-          value="0"
-          icon="alert-circle-outline"
-          colors={["#f97066", "#f04438"]}
-        />
-        <AddMotherCard onPress={() => router.push("/mothers/register")} />
+        <AddMotherCard onPress={() => router.push("/mothers/create")} />
       </ScrollView>
 
       {/* Search */}

@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-export default function HouseholdsLayout() {
+export default function CareJourneyLayout() {
   return (
     <Stack
       screenOptions={{
@@ -8,8 +8,7 @@ export default function HouseholdsLayout() {
       }}
     >
       <Stack.Screen name="index" />
-      <Stack.Screen name="create" />
-      <Stack.Screen name="[id]" />
+      <Stack.Screen name="[milestoneId]" />
     </Stack>
   );
 }

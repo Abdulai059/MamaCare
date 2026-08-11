@@ -20,20 +20,20 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="households"
-        options={{
-          title: "Households",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="mothers"
         options={{
           title: "Mothers",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="people" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="careJourney"
+        options={{
+          title: "Care Journey",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="heart-outline" size={size} color={color} />
           ),
         }}
       />
