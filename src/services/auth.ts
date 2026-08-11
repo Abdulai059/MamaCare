@@ -1,3 +1,4 @@
+// src/services/auth.ts
 import { supabase } from "@/lib/supabase";
 
 export async function signIn(email: string, password: string) {
@@ -17,9 +18,10 @@ export async function signOut() {
 export async function getProfile(userId: string) {
   const { data, error } = await supabase
     .from("profiles")
-    .select("*, districts(name), chps_compounds(name)")
+    .select("*")
     .eq("id", userId)
-    .single();
+    .maybeSingle(); // returns null instead of throwing on 0 rows
+
   if (error) throw error;
   return data;
 }

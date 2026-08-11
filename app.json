@@ -1,14 +1,17 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "MamaLink",
+    "slug": "mamalink",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "mobile",
+    "scheme": "mamalink",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/images/icon.png",
+      "bundleIdentifier": "com.chpsworkers.mamalink",
+      "supportsTabletMode": false,
+      "deploymentTarget": "13.0"
     },
     "android": {
       "adaptiveIcon": {
@@ -17,7 +20,9 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.chpsworkers.mamalink",
+      "minSdkVersion": 21
     },
     "web": {
       "output": "static",
@@ -28,9 +33,10 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
+          "backgroundColor": "#ffffff",
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "imageWidth": 200,
+          "resizeMode": "contain"
         }
       ],
       "expo-font",
@@ -42,7 +48,11 @@
     },
     "extra": {
       "supabaseUrl": "YOUR_SUPABASE_URL",
-      "supabaseKey": "YOUR_SUPABASE_ANON_KEY"
+      "supabaseKey": "YOUR_SUPABASE_ANON_KEY",
+      "router": {},
+      "eas": {
+        "projectId": "e6f87a1c-da63-40ca-93df-09fd51c526c1"
+      }
     }
   }
 }

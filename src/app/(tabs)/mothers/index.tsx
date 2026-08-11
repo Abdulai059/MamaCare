@@ -11,8 +11,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useAllMothers } from "@/hooks/query/usePersons";
-import { useHouseholds } from "@/hooks/query/useHouseholds";
+// import { useAllMothers } from "@/hooks/query/usePersons";
+// import { useHouseholds } from "@/hooks/query/useHouseholds";
 import StatCard from "@/features/ui/StatCard";
 import Row from "@/features/ui/Row";
 
@@ -48,8 +48,12 @@ function AddMotherCard({ onPress }: { onPress: () => void }) {
 export default function MothersScreen(): React.JSX.Element {
   const router = useRouter();
   const [search, setSearch] = useState("");
-  const { data: mothers, isLoading, isError } = useAllMothers();
-  const { data: households = [] } = useHouseholds();
+  // const { data: mothers, isLoading, isError } = useAllMothers();
+  // const { data: households = [] } = useHouseholds();
+  const mothers = [];
+  const isLoading = false;
+  const isError = false;
+  const households = [];
 
   const filtered = mothers?.filter((m) =>
     `${m.first_name} ${m.last_name ?? ""}`

@@ -8,8 +8,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { useAllMothers } from "@/hooks/query/usePersons";
-import { useHouseholds } from "@/hooks/query/useHouseholds";
+// import { useAllMothers } from "@/hooks/query/usePersons";
+// import { useHouseholds } from "@/hooks/query/useHouseholds";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import StatCard from "@/features/ui/StatCard";
@@ -18,9 +18,13 @@ import { HeaderSection } from "@/features/ui/HeaderSection";
 
 export default function HomeScreen(): React.JSX.Element {
   const router = useRouter();
-  const { data: mothers = [], isLoading: mothersLoading } = useAllMothers();
-  const { data: households = [], isLoading: householdsLoading } =
-    useHouseholds();
+  // const { data: mothers = [], isLoading: mothersLoading } = useAllMothers();
+  // const { data: households = [], isLoading: householdsLoading } =
+  //   useHouseholds();
+  const mothers = [];
+  const households = [];
+  const mothersLoading = false;
+  const householdsLoading = false;
 
   const isLoading = mothersLoading || householdsLoading;
   const totalMothers = mothers.length;

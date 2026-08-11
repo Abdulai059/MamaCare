@@ -60,7 +60,7 @@ const DoctorCard = ({ item }: { item: Doctor }) => {
   return (
     <View
       style={{ width: CARD_WIDTH }}
-      className={`relative h-65 rounded-4xl ${item.bgColor ?? "bg-[#FFF2C6]"} overflow-hidden p-5 justify-between mr-4`}
+      className={`relative h-65 rounded-4xl ${item.bgColor ?? "bg-[#FFF2C6]"} overflow-hidden shadow-md p-5 justify-between mr-4`}
     >
       {/* Top Bar: Rating Badge & Heart Button */}
       <View className="flex-row items-center justify-between z-10">

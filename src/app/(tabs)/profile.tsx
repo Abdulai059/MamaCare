@@ -3,11 +3,13 @@ import { Text, View, TouchableOpacity, Alert, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useAuth } from "@/hooks/providers/AuthProvider";
+import { useAuthStatus } from "@/hooks/useAuthStatus";
 import { ScreenScrollView } from "@/shared/context/ScreenScrollView";
 import SettingsRow from "@/features/onboarding/components/SettingsRow";
 
 export default function ProfileScreen(): React.JSX.Element {
-  const { profile, session, signOut } = useAuth();
+  const { signOut } = useAuth();
+  const { profile, session } = useAuthStatus();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogout = async () => {

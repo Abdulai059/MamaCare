@@ -1,26 +1,16 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
-import { getProfile } from "@/services/auth";
+import {
+  signIn as signInService,
+  signOut as signOutService,
+} from "@/services/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-type Profile = {
-  id: string;
-  full_name: string;
-  avatar_url: string | null;
-  role: "CHPS_WORKER" | "SUPERVISOR" | "ADMIN";
-  district_id: string | null;
-  chps_compound_id: string | null;
-  districts: { name: string } | null;
-  chps_compounds: { name: string } | null;
-};
 
 interface AuthContextType {
   hasSeenOnboarding: boolean;
-  isAuthenticated: boolean;
-  isLoading: boolean;
+  isSessionLoading: boolean;
   session: Session | null;
-  profile: Profile | null;
   setHasSeenOnboarding: (val: boolean) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -31,28 +21,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [hasSeenOnboarding, setHasSeenOnboardingState] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const isAuthenticated = !!(
-    session &&
-    profile &&
-    profile.role === "CHPS_WORKER"
-  );
-
-  const loadProfile = async (currentSession: Session | null) => {
-    if (currentSession) {
-      try {
-        const p = await getProfile(currentSession.user.id);
-        setProfile(p);
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-        setProfile(null);
-      }
-    } else {
-      setProfile(null);
-    }
-  };
+  const [isSessionLoading, setIsSessionLoading] = useState(true);
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -64,20 +33,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           data: { session: currentSession },
         } = await supabase.auth.getSession();
         setSession(currentSession);
-        await loadProfile(currentSession);
       } catch (error) {
         console.error("Error initializing auth:", error);
       } finally {
-        setIsLoading(false);
+        setIsSessionLoading(false);
       }
     };
 
     initializeAuth();
 
     const { data: listener } = supabase.auth.onAuthStateChange(
-      async (_event: string, newSession: Session | null) => {
+      (_event: string, newSession: Session | null) => {
         setSession(newSession);
-        await loadProfile(newSession);
       },
     );
 
@@ -94,27 +61,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) throw error;
-    // session/profile update automatically via onAuthStateChange listener
+    await signInService(email, password);
+    // session updates automatically via onAuthStateChange listener
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    await signOutService();
   };
 
   return (
     <AuthContext.Provider
       value={{
         hasSeenOnboarding,
-        isAuthenticated,
-        isLoading,
+        isSessionLoading,
         session,
-        profile,
         setHasSeenOnboarding,
         signIn,
         signOut,

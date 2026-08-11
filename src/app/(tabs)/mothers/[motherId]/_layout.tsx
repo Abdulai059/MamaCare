@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-export default function MothersLayout() {
+export default function MotherDetailLayout() {
   return (
     <Stack
       screenOptions={{
@@ -8,8 +8,6 @@ export default function MothersLayout() {
       }}
     >
       <Stack.Screen name="index" />
-      <Stack.Screen name="[motherId]" />
-      <Stack.Screen name="create/index" />
     </Stack>
   );
 }

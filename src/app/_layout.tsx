@@ -1,25 +1,77 @@
 import "../global.css";
-import React, { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Stack, useSegments, useRouter } from "expo-router";
-import { StatusBar } from "react-native";
+import { StatusBar, View, ActivityIndicator, Image, Animated } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { View } from "react-native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+
 import { setupOnlineManager } from "@/hooks/query/useOnlineManager";
 import { useAppState } from "@/hooks/query/useAppState";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
-import { AuthProvider, useAuth } from "@/hooks/providers/AuthProvider";
+import { AuthProvider } from "@/hooks/providers/AuthProvider";
+import { useAuthStatus } from "@/hooks/useAuthStatus";
+import UserInactivityProvider from "@/shared/context/UserInactivity";
+import { useLockManager } from "@/hooks/useLockManager";
 
 SplashScreen.preventAutoHideAsync();
-
 setupOnlineManager();
 
-function RootNavigator(): React.JSX.Element {
-  const { isAuthenticated, isLoading, hasSeenOnboarding } = useAuth();
+function SplashOverlay() {
+  const { isLoading } = useAuthStatus();
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const [showOverlay, setShowOverlay] = useState(true);
+
+  useEffect(() => {
+    if (!isLoading && showOverlay) {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }).start(() => {
+        setShowOverlay(false);
+      });
+    }
+  }, [isLoading, showOverlay, fadeAnim]);
+
+  if (!showOverlay) {
+    return null;
+  }
+
+  return (
+    <Animated.View
+      style={[
+        {
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "#ffffff",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 9999,
+          pointerEvents: isLoading ? "auto" : "none",
+        },
+        { opacity: fadeAnim },
+      ]}
+    >
+      <Image
+        source={require("../../assets/images/splash-icon.png")}
+        style={{ width: 200, height: 200 }}
+        resizeMode="contain"
+      />
+    </Animated.View>
+  );
+}
+
+function RootNavigator() {
+  const { isAuthenticated, isLoading, hasSeenOnboarding } = useAuthStatus();
   const segments = useSegments();
   const router = useRouter();
+
+  useLockManager();
 
   useEffect(() => {
     if (isLoading) {
@@ -54,13 +106,16 @@ function RootNavigator(): React.JSX.Element {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
+      {/* Modal Screens */}
+      <Stack.Screen name="(modal)/lock" options={{ headerShown: false }} />
+      <Stack.Screen name="(modal)/overlay" options={{ headerShown: false, animation: "fade", animationDuration: 300 }} />
     </Stack>
   );
 }
 
-export default function App(): React.JSX.Element {
-  useAppState();
-
+function RootLayoutContent() {
+  const { isLoading } = useAuthStatus();
   const [fontsLoaded] = useFonts({
     Poppins_400Regular: require("../../assets/fonts/poppins.regular.ttf"),
     Poppins_500Medium: require("../../assets/fonts/poppins.medium.ttf"),
@@ -69,23 +124,48 @@ export default function App(): React.JSX.Element {
   });
 
   useEffect(() => {
-    if (fontsLoaded) {
+    // Hide native splash when BOTH fonts and auth are loaded
+    if (fontsLoaded && !isLoading) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded, isLoading]);
 
   if (!fontsLoaded) {
-    return <View style={{ flex: 1 }} />;
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <ActivityIndicator size="large" color="#f259ce" />
+      </View>
+    );
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <SafeAreaProvider>
-        <StatusBar barStyle="dark-content" />
-        <AuthProvider>
-          <RootNavigator />
-        </AuthProvider>
-      </SafeAreaProvider>
-    </QueryClientProvider>
+    <View style={{ flex: 1 }}>
+      <RootNavigator />
+      <SplashOverlay />
+    </View>
+  );
+}
+
+export default function RootLayout() {
+  useAppState();
+
+  return (
+    <UserInactivityProvider>
+      <QueryClientProvider client={queryClient}>
+        <SafeAreaProvider>
+          <StatusBar barStyle="dark-content" />
+          <AuthProvider>
+            <RootLayoutContent />
+          </AuthProvider>
+        </SafeAreaProvider>
+      </QueryClientProvider>
+    </UserInactivityProvider>
   );
 }

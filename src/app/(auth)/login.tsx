@@ -8,7 +8,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  StyleSheet,
   Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/hooks/providers/AuthProvider";
+import { useAuthStatus } from "@/hooks/useAuthStatus";
 
 interface HeaderSectionProps {
   userName?: string;
@@ -19,7 +20,8 @@ interface HeaderSectionProps {
 }
 
 export function HeaderSection({ onNotificationPress }: HeaderSectionProps) {
-  const { profile, session, signOut } = useAuth();
+  const { signOut } = useAuth();
+  const { profile, session } = useAuthStatus();
 
   return (
     <View className="w-full px-5 pt-4 pb-2">

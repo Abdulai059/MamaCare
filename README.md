@@ -1,56 +1,87 @@
-# Welcome to your Expo app 👋
+# MamaLink Mobile App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is the React Native mobile application for MamaLink - an AI-powered Care Coordination Platform for Community Maternal and Newborn Health.
 
-## Get started
+## Project Overview
 
-1. Install dependencies
+MamaLink is a Care Coordination Platform that helps CHPS workers proactively manage maternal and newborn care in Ghana. For full project documentation, see the [main documentation directory](../docs/).
 
-   ```bash
-   npm install
-   ```
+## Technology Stack
 
-2. Start the app
+- **Framework:** React Native (Expo)
+- **Language:** TypeScript
+- **State Management:** Zustand
+- **Data Fetching:** TanStack Query
+- **Database:** Supabase (PostgreSQL)
+- **Styling:** NativeWind (Tailwind CSS)
+- **Navigation:** Expo Router
 
-   ```bash
-   npx expo start
-   ```
+## Getting Started
 
-In the output, you'll find options to open the app in a
+### Prerequisites
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- Node.js 18+
+- npm or yarn
+- Expo CLI
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### Installation
 
 ```bash
-npm run reset-project
+cd mobile
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Environment Setup
 
-### Other setup steps
+Create a `.env` file:
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+```env
+EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
+EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-## Learn more
+### Running the App
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+# Start development server
+npm start
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+# Run on iOS
+npm run ios
 
-## Join the community
+# Run on Android
+npm run android
+```
 
-Join our community of developers creating universal apps.
+## Project Structure
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```
+src/
+├── app/              # Expo Router screens
+├── features/         # Feature modules
+├── hooks/            # React hooks (query/mutations)
+├── lib/              # Utilities and configurations
+├── services/         # API services
+├── shared/           # Shared components and stores
+└── assets/           # Images and fonts
+```
+
+## Key Features
+
+- 🔐 Authentication & authorization
+- 👥 Household & person management
+- 🤰 Pregnancy registration with automatic care journey generation
+- 📊 Care journey tracking with milestones
+- 🏥 Clinical assessment recording
+- ⚠️ Risk detection and alerts
+- 📱 Offline-first data sync
+- 🌍 Multi-language support
+
+## Documentation
+
+For detailed documentation, see:
+
+- [Project Overview](../docs/README.md)
+- [Care Journey Specification](../docs/specifications/Care Journey.md)
+- [Data Dictionary](../docs/reference/DATA_DICTIONARY.md)
+- [TanStack Query Guide](../docs/guides/QUERY_GUIDE.md)
