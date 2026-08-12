@@ -116,7 +116,7 @@ export default function AnimatedTabBar({
               </View>
 
               {active && (
-                <Text className="ml-2 text-white text-sm font-semibold">
+                <Text className="ml-2 text-slate-800 text-sm font-semibold">
                   {LABELS[route.name] ?? route.name}
                 </Text>
               )}

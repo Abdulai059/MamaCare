@@ -14,13 +14,15 @@ import { AuthProvider } from "@/hooks/providers/AuthProvider";
 import { useAuthStatus } from "@/hooks/useAuthStatus";
 import UserInactivityProvider from "@/shared/context/UserInactivity";
 import { useLockManager } from "@/hooks/useLockManager";
-import { initializeHouseholds } from "@/state/households";
-import { initializePersons } from "@/state/persons";
+import { initializeApp } from "@/state/initialization";
 
 SplashScreen.preventAutoHideAsync();
 setupOnlineManager();
-initializeHouseholds();
-initializePersons();
+
+// Initialize app state, auth, households, and persons in proper order
+initializeApp().catch((error) => {
+  console.error("[App Init] Initialization error:", error);
+});
 
 function SplashOverlay() {
   const { isLoading } = useAuthStatus();

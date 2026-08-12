@@ -17,6 +17,13 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
+        name="households"
+        options={{
+          title: "Household",
+        }}
+      />
+
+      <Tabs.Screen
         name="mothers"
         options={{
           title: "Mothers",
@@ -34,13 +41,6 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: "Profile",
-        }}
-      />
-
-      <Tabs.Screen
-        name="households"
-        options={{
-          title: "Household",
         }}
       />
     </Tabs>

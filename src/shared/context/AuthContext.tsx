@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
-import { fetchProfile } from "@/services/auth";
+import { getProfile } from "@/services/auth";
 
 type Profile = {
   id: string;
@@ -40,7 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const loadProfile = async (currentSession: Session | null) => {
     if (currentSession) {
       try {
-        const p = await fetchProfile(currentSession.user.id);
+        const p = await getProfile(currentSession.user.id);
         setProfile(p);
       } catch (error) {
         console.error("Error fetching profile:", error);

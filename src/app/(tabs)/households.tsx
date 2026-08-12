@@ -11,8 +11,10 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { observer } from "@legendapp/state/react";
-import { households$, createHousehold, deleteHousehold } from "@/state/households";
-import { persons$, createPerson, getPersonsByHousehold } from "@/state/persons";
+import { households$ } from "@/state/households";
+import { persons$ } from "@/state/persons";
+import { createHousehold, deleteHousehold } from "@/services/households";
+import { createPerson, getPersonsByHousehold } from "@/services/persons";
 import { ScreenScrollView } from "@/shared/context/ScreenScrollView";
 import { Colors } from "@/shared/constants/colors";
 
@@ -24,15 +26,16 @@ function HouseholdsScreen() {
   const [address, setAddress] = useState("");
   const [personFirstName, setPersonFirstName] = useState("");
   const [personLastName, setPersonLastName] = useState("");
-  const [personRole, setPersonRole] = useState<"MOTHER" | "CHILD" | "CAREGIVER">(
+  const [personRole, setPersonRole] = useState<"MOTHER" | "CAREGIVER" | "CHPS_WORKER">(
     "MOTHER",
   );
   const [isLoading, setIsLoading] = useState(false);
 
-  const households = households$?.get() || {};
-  const householdsList = Object.values(households as Record<string, any>).filter(
-    (h) => !h.deleted_at,
-  );
+  // Direct observable access - observer() wrapper will track these accesses
+  const households = households$.get() || {};
+  const householdsList = Object.values(households as Record<string, any>)
+    .filter((h) => !h.deleted_at)
+    .sort((a: any, b: any) => (a.created_at || "").localeCompare(b.created_at || ""));
 
   const handleCreateHousehold = async () => {
     if (!householdCode.trim()) {
@@ -429,7 +432,7 @@ function HouseholdsScreen() {
                 Role
               </Text>
               <View className="flex-row gap-2">
-                {(["MOTHER", "CHILD", "CAREGIVER"] as const).map((role) => (
+                {(["MOTHER", "CAREGIVER", "CHPS_WORKER"] as const).map((role) => (
                   <TouchableOpacity
                     key={role}
                     onPress={() => setPersonRole(role)}
