@@ -5,6 +5,7 @@ module.exports = {
     extend: {
       colors: {
         primary: "#208AEF",
+        brandBlue: "#208AEF", // or a different shade if you want to differentiate
       },
     },
   },

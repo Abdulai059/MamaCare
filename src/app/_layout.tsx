@@ -14,9 +14,13 @@ import { AuthProvider } from "@/hooks/providers/AuthProvider";
 import { useAuthStatus } from "@/hooks/useAuthStatus";
 import UserInactivityProvider from "@/shared/context/UserInactivity";
 import { useLockManager } from "@/hooks/useLockManager";
+import { initializeHouseholds } from "@/state/households";
+import { initializePersons } from "@/state/persons";
 
 SplashScreen.preventAutoHideAsync();
 setupOnlineManager();
+initializeHouseholds();
+initializePersons();
 
 function SplashOverlay() {
   const { isLoading } = useAuthStatus();
@@ -155,6 +159,12 @@ function RootLayoutContent() {
 
 export default function RootLayout() {
   useAppState();
+
+  useEffect(() => {
+    import("@/state/auth").then(({ initializeAuth }) => {
+      initializeAuth();
+    });
+  }, []);
 
   return (
     <UserInactivityProvider>

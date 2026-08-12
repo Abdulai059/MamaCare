@@ -1,12 +1,11 @@
 import { Tabs } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { Colors } from "../../shared/constants/colors";
+import AnimatedTabBar from "@/features/ui/CustomTabBar";
 
 export default function TabLayout() {
   return (
     <Tabs
+      tabBar={(props) => <AnimatedTabBar {...props} />}
       screenOptions={{
-        tabBarActiveTintColor: Colors.brandBlue,
         headerShown: false,
       }}
     >
@@ -14,27 +13,20 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} />
-          ),
         }}
       />
+
       <Tabs.Screen
         name="mothers"
         options={{
           title: "Mothers",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="people" size={size} color={color} />
-          ),
         }}
       />
+
       <Tabs.Screen
         name="tasks"
         options={{
           title: "Tasks",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="list" size={size} color={color} />
-          ),
         }}
       />
 
@@ -42,23 +34,15 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" size={size} color={color} />
-          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="households"
+        options={{
+          title: "Household",
         }}
       />
     </Tabs>
   );
-}
-
-{
-  /* <Tabs.Screen
-        name="alerts"
-        options={{
-          title: "Alerts",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="notifications" size={size} color={color} />
-          ),
-        }}
-      /> */
 }

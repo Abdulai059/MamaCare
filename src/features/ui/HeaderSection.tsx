@@ -29,11 +29,17 @@ export function HeaderSection({ onNotificationPress }: HeaderSectionProps) {
       <View className="flex-row items-center justify-between mb-6">
         {/* Profile Avatar + Greeting */}
         <View className="flex-row items-center gap-x-3">
-          <Image
-            source={{ uri: profile?.avatar_url || "" }}
-            className="w-12 h-12 rounded-full bg-[#c8c1ef]"
-            resizeMode="cover"
-          />
+          {profile?.avatar_url ? (
+            <Image
+              source={{ uri: profile.avatar_url }}
+              className="w-12 h-12 rounded-full bg-[#c8c1ef]"
+              resizeMode="cover"
+            />
+          ) : (
+            <View className="w-12 h-12 rounded-full bg-[#c8c1ef] items-center justify-center">
+              <Ionicons name="person" size={24} color="#fff" />
+            </View>
+          )}
 
           <View>
             <Text className="text-base font-bold text-gray-900 leading-tight">
