@@ -12,3 +12,4 @@ export interface Household extends Syncable {
   updated_at: string;
   deleted_at: string | null;
 }
+

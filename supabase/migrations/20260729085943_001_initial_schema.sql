@@ -249,8 +249,6 @@ create table persons (
 
   preferred_language text,
 
-  role person_role_enum not null,
-
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
 

@@ -1,38 +1,48 @@
 import { useMemo } from "react";
-import { persons$, isSyncing$, lastSyncTime$, getPersonsByHousehold } from "@/state/persons";
+import { use$ } from "@legendapp/state/react";
+import {
+  persons$,
+  isSyncing$,
+  lastSyncTime$,
+  getPersonsByHousehold,
+} from "@/state/persons";
 import {
   createPerson,
   updatePerson,
   deletePerson,
   syncPersonsToSupabase,
+  getPersons,
 } from "@/services/persons";
+import type { Person } from "@/utils/types/person";
 
 /**
- * Hook to access persons state and operations
- * Component must be wrapped with observer() to get reactive updates
+ * Hook to access persons state and operations.
+ * Components using values from this hook must be wrapped with observer()
  */
 export function usePersons() {
-  // Get current values from observables
-  const persons = persons$.get() || {};
-  const isSyncing = isSyncing$.get() || false;
-  const lastSyncTime = lastSyncTime$.get() || null;
+  // Use LegendApp's use$ hook for reactive tracking inside React components
+  const persons = use$(persons$) || {};
+  const isSyncing = use$(isSyncing$) || false;
+  const lastSyncTime = use$(lastSyncTime$) || null;
 
-  // Convert observable record to array and filter out deleted items
+  // Convert dictionary into a sorted array of active persons
   const personsList = useMemo(() => {
-    return Object.values(persons as Record<string, any>)
-      .filter((p: any) => !p.deleted_at)
-      .sort((a: any, b: any) => (a.created_at || "").localeCompare(b.created_at || ""));
+    return Object.values(persons as Record<string, Person>)
+      .filter((p) => !p.deleted_at)
+      .sort((a, b) => (a.created_at || "").localeCompare(b.created_at || ""));
   }, [persons]);
 
   return {
-    persons: persons as Record<string, any>,
+    persons: persons as Record<string, Person>,
     personsList,
-    isSyncing: isSyncing as boolean,
-    lastSyncTime: lastSyncTime as string | null,
+    isSyncing,
+    lastSyncTime,
+    // Operations
     createPerson,
     updatePerson,
     deletePerson,
     getPersonsByHousehold,
     syncNow: syncPersonsToSupabase,
+    refreshPersons: getPersons,
   };
 }
