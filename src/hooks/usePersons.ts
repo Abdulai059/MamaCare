@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { use$ } from "@legendapp/state/react";
 import {
   persons$,
@@ -26,11 +25,10 @@ export function usePersons() {
   const lastSyncTime = use$(lastSyncTime$) || null;
 
   // Convert dictionary into a sorted array of active persons
-  const personsList = useMemo(() => {
-    return Object.values(persons as Record<string, Person>)
-      .filter((p) => !p.deleted_at)
-      .sort((a, b) => (a.created_at || "").localeCompare(b.created_at || ""));
-  }, [persons]);
+  // Note: No useMemo needed - LegendApp's observer handles reactivity
+  const personsList = Object.values(persons as Record<string, Person>)
+    .filter((p) => !p.deleted_at)
+    .sort((a, b) => (a.created_at || "").localeCompare(b.created_at || ""));
 
   return {
     persons: persons as Record<string, Person>,

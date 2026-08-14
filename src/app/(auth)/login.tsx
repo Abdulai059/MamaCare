@@ -14,7 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/hooks/providers/AuthProvider";
 import { Colors } from "../../shared/constants/colors";
-import loginAvator from "@/assets/onboarding/login.png";
+import loginAvator from "@/assets/onboarding/onboarding.png";
 
 const LoginScreen: React.FC = () => {
   const { signIn } = useAuth();
@@ -53,14 +53,16 @@ const LoginScreen: React.FC = () => {
         >
           <View className="flex-1 px-6 py-12 justify-center">
             {/* Header */}
-            <View className="items-center mb-10">
-              <View className="w-21 h-21 rounded-full bg-pink-100 items-center justify-center mb-4">
-                <Image
-                  source={loginAvator}
-                  style={{ width: 100, height: 230 }}
-                  resizeMode="contain"
-                />
-              </View>
+            {/* Header */}
+            <View className="items-center mb-6">
+              {/* Render avatar directly at a larger height/width */}
+              <Image
+                source={loginAvator}
+                style={{ width: 230, height: 230 }}
+                resizeMode="contain"
+                className="mb-2"
+              />
+
               <Text className="text-3xl font-bold text-gray-800 mb-1">
                 MamaLink
               </Text>

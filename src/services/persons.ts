@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import { batch } from "@legendapp/state";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { supabase } from "@/lib/supabase";
 import {
@@ -251,7 +252,10 @@ export async function createPerson(data: {
     _syncState: "pending",
   };
 
-  persons$[id].set(person);
+  batch(() => {
+    persons$[id].set(person);
+  });
+
   syncInBackground();
 
   return id;
@@ -279,13 +283,15 @@ export async function updatePerson(
       ? null
       : data.date_of_birth;
 
-  persons$[id].set({
-    ...current,
-    ...data,
-    // date_of_birth: dob, // ERROR HERE 
-    updated_at: new Date().toISOString(),
-    _synced: false,
-    _syncState: "pending",
+  batch(() => {
+    persons$[id].set({
+      ...current,
+      ...data,
+      // date_of_birth: dob,
+      updated_at: new Date().toISOString(),
+      _synced: false,
+      _syncState: "pending",
+    });
   });
 
   syncInBackground();
@@ -295,12 +301,14 @@ export async function deletePerson(id: string) {
   const current = persons$[id].get();
   if (!current) throw new Error("Person not found");
 
-  persons$[id].set({
-    ...current,
-    deleted_at: new Date().toISOString(),
-    _synced: false,
-    _syncedDelete: false,
-    _syncState: "pending",
+  batch(() => {
+    persons$[id].set({
+      ...current,
+      deleted_at: new Date().toISOString(),
+      _synced: false,
+      _syncedDelete: false,
+      _syncState: "pending",
+    });
   });
 
   syncInBackground();

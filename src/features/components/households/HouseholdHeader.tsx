@@ -31,12 +31,12 @@ export function HouseholdHeader({ onAdd }: HouseholdHeaderProps) {
         <TouchableOpacity
           onPress={onAdd}
           activeOpacity={0.8}
-          className="flex-row items-center rounded-xl bg-brand-pink px-3 py-1.5"
+          className="flex-row items-center rounded-xl bg-card-mint px-3 py-1.5"
         >
-          <Ionicons name="add" size={24} color="white" />
+          <Ionicons name="add" size={24} className="text-dark" />
 
           <Text
-            className="ml-1 text-sm text-white"
+            className="ml-1 text-sm text-dark"
             style={{ fontFamily: "Poppins_600SemiBold" }}
           >
             Add

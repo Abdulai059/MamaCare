@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 import { observer } from "@legendapp/state/react";
 import { use$ } from "@legendapp/state/react";
@@ -16,12 +16,12 @@ function HouseholdsScreen() {
   // Use reactive observer hook to read households state safely
   const householdsData = use$(households$) ?? {};
 
-  // Memoize sorted active households list
-  const householdsList = useMemo(() => {
-    return Object.values(householdsData as Record<string, Household>)
-      .filter((h) => !h.deleted_at)
-      .sort((a, b) => (a.created_at || "").localeCompare(b.created_at || ""));
-  }, [householdsData]);
+  // Derive sorted active households list reactively (no useMemo - LegendApp handles this)
+  const householdsList = Object.values(
+    householdsData as Record<string, Household>,
+  )
+    .filter((h) => !h.deleted_at)
+    .sort((a, b) => (a.created_at || "").localeCompare(b.created_at || ""));
 
   const [selectedHouseholdId, setSelectedHouseholdId] = useState<string | null>(
     null,
@@ -44,7 +44,7 @@ function HouseholdsScreen() {
   };
 
   return (
-    <ScreenScrollView className="bg-surface">
+    <ScreenScrollView>
       <HouseholdHeader onAdd={() => setShowCreateModal(true)} />
 
       <View className="px-6 pb-8">

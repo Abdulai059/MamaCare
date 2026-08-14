@@ -1,5 +1,5 @@
-import React from "react";
-import { Text, View, Pressable } from "react-native";
+
+import { Text, View, Pressable, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { observer } from "@legendapp/state/react";
 
@@ -21,7 +21,7 @@ export const PersonList = observer(function PersonList({
   }
 
   return (
-    <View className="overflow-hidden rounded-xl bg-white shadow-sm divide-y divide-gray-100">
+    <View className="overflow-hidden rounded-xl bg-white shadow-sm">
       {persons.map((person) => {
         return (
           <Pressable
@@ -31,26 +31,43 @@ export const PersonList = observer(function PersonList({
           >
             {/* Header: Person Name & Navigation Chevron */}
             <View className="flex-row items-center justify-between mb-2">
-              <Text
-                className="text-sm text-gray-900 uppercase"
-                style={{
-                  fontFamily: "Poppins_600SemiBold",
-                }}
-              >
-                <Text>{person.first_name}</Text>
-                {"   "}
-                <Text>{person.last_name}</Text>
-              </Text>
+              <View className="flex-row items-center">
+                <Text className="text-xs font-semibold text-gray-400 w-24">
+                  MORTHER:
+                </Text>
+                <Text
+                  className="text-base text-gray-900 uppercase"
+                  style={{
+                    fontFamily: "Poppins_600SemiBold",
+                  }}
+                >
+                  <Text>{person.first_name}</Text>
+                  {"   "}
+                  <Text>{person.last_name}</Text>
+                </Text>
+              </View>
 
-              <Ionicons
-                name="chevron-forward"
-                size={20}
-                color={Colors.textGray}
-              />
+              <TouchableOpacity
+                onPress={() => onPressPerson?.(person)}
+                hitSlop={8}
+                className="flex-row items-center gap-x-1 bg-[#f157cd] rounded-md px-2 py-2"
+              >
+                <Text
+                  className="text-xs text-white"
+                  style={{ fontFamily: "Poppins_600SemiBold" }}
+                >
+                  View Details
+                </Text>
+                {/* <Ionicons
+                  name="chevron-forward"
+                  size={16}
+                  color={Colors.brandPink}
+                /> */}
+              </TouchableOpacity>
             </View>
 
             {/* Column Location & Contact Details */}
-            <View className="flex-col gap-y-1.5 pl-1 border-l-2 border-gray-100">
+            <View className="flex-col gap-y-1.5 pl-0">
               {/* Region */}
               <View className="flex-row items-center">
                 <Text className="text-xs font-semibold text-gray-400 w-24">

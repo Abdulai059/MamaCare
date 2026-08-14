@@ -1,7 +1,13 @@
 import "../global.css";
 import { useEffect, useState, useRef } from "react";
 import { Stack, useSegments, useRouter } from "expo-router";
-import { StatusBar, View, ActivityIndicator, Image, Animated } from "react-native";
+import {
+  StatusBar,
+  View,
+  ActivityIndicator,
+  Image,
+  Animated,
+} from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -64,7 +70,7 @@ function SplashOverlay() {
       ]}
     >
       <Image
-        source={require("../../assets/images/splash-icon.png")}
+        source={require("@/assets/onboarding/onboarding.png")}
         style={{ width: 200, height: 200 }}
         resizeMode="contain"
       />
@@ -115,7 +121,14 @@ function RootNavigator() {
 
       {/* Modal Screens */}
       <Stack.Screen name="(modal)/lock" options={{ headerShown: false }} />
-      <Stack.Screen name="(modal)/overlay" options={{ headerShown: false, animation: "fade", animationDuration: 300 }} />
+      <Stack.Screen
+        name="(modal)/overlay"
+        options={{
+          headerShown: false,
+          animation: "fade",
+          animationDuration: 300,
+        }}
+      />
     </Stack>
   );
 }

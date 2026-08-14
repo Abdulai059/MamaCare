@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import { batch } from "@legendapp/state";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { supabase } from "@/lib/supabase";
 import {
@@ -31,6 +32,54 @@ export async function loadHouseholdsFromStorage() {
     }
   } catch (error) {
     console.error("[Households] Error loading from storage:", error);
+  }
+}
+
+/** Pulls remote households from Supabase for assigned communities */
+export async function getHouseholds() {
+  try {
+    const communityIds = assignedCommunityIds$.get();
+    if (!communityIds || communityIds.length === 0) {
+      console.log("[Households] No assigned communities, skipping fetch");
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("households")
+      .select("*")
+      .in("community_id", communityIds);
+
+    if (error) {
+      console.error("[Households] Error fetching from Supabase:", error);
+      return;
+    }
+
+    if (data) {
+      const currentLocal = households$.get() ?? {};
+      const updatedMap: Record<string, Household> = { ...currentLocal };
+
+      data.forEach((remoteHousehold) => {
+        const local = currentLocal[remoteHousehold.id];
+
+        // Safe merge: Don't overwrite if local record has unsynced changes
+        if (!local || local._syncState === "synced") {
+          updatedMap[remoteHousehold.id] = {
+            ...remoteHousehold,
+            _synced: true,
+            _syncedDelete: !!remoteHousehold.deleted_at,
+            _syncState: "synced",
+          };
+        }
+      });
+
+      households$.set(updatedMap);
+      setHouseholdsLastSync(new Date().toISOString());
+      console.log(
+        `[Households] Fetched ${data.length} households from Supabase`,
+      );
+    }
+  } catch (error) {
+    console.error("[Households] Fetch exception:", error);
   }
 }
 
@@ -171,7 +220,10 @@ export async function createHousehold(data: {
     _syncState: "pending",
   };
 
-  households$[id].set(household);
+  batch(() => {
+    households$[id].set(household);
+  });
+
   syncInBackground();
 
   return id;
@@ -186,12 +238,14 @@ export async function updateHousehold(
     throw new Error("Household not found");
   }
 
-  households$[id].set({
-    ...current,
-    ...data,
-    updated_at: new Date().toISOString(),
-    _synced: false,
-    _syncState: "pending",
+  batch(() => {
+    households$[id].set({
+      ...current,
+      ...data,
+      updated_at: new Date().toISOString(),
+      _synced: false,
+      _syncState: "pending",
+    });
   });
 
   syncInBackground();
@@ -203,23 +257,34 @@ export async function deleteHousehold(id: string) {
     throw new Error("Household not found");
   }
 
-  households$[id].set({
-    ...current,
-    deleted_at: new Date().toISOString(),
-    _synced: false,
-    _syncedDelete: false,
-    _syncState: "pending",
+  batch(() => {
+    households$[id].set({
+      ...current,
+      deleted_at: new Date().toISOString(),
+      _synced: false,
+      _syncedDelete: false,
+      _syncState: "pending",
+    });
   });
 
   syncInBackground();
 }
 
 export async function initializeHouseholds() {
+  // 1. Fast local load
   await loadHouseholdsFromStorage();
 
+  // 2. Fetch fresh remote state
+  await getHouseholds();
+
+  // 3. Register offline listener
   offlineSyncManager.register("households", {
-    onForeground: syncHouseholdsToSupabase,
+    onForeground: async () => {
+      await syncHouseholdsToSupabase();
+      await getHouseholds();
+    },
   });
 
+  // 4. Trigger initial push sync
   setTimeout(() => syncHouseholdsToSupabase(), 2000);
 }

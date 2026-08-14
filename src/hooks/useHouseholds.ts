@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { households$, isSyncing$, lastSyncTime$ } from "@/state/households";
 import type { Household } from "@/utils/types/household";
 import {
@@ -6,6 +5,7 @@ import {
   updateHousehold,
   deleteHousehold,
   syncHouseholdsToSupabase,
+  getHouseholds,
 } from "@/services/households";
 
 /**
@@ -18,11 +18,10 @@ export function useHouseholds() {
   const lastSyncTime = lastSyncTime$.get();
 
   // Active (non-deleted) households, oldest first
-  const householdsList = useMemo(() => {
-    return Object.values(households)
-      .filter((h) => !h.deleted_at)
-      .sort((a, b) => a.created_at.localeCompare(b.created_at));
-  }, [households]);
+  // Note: No useMemo needed - LegendApp's observer handles reactivity
+  const householdsList = Object.values(households)
+    .filter((h) => !h.deleted_at)
+    .sort((a, b) => a.created_at.localeCompare(b.created_at));
 
   return {
     households,
@@ -33,5 +32,6 @@ export function useHouseholds() {
     updateHousehold,
     deleteHousehold,
     syncNow: syncHouseholdsToSupabase,
+    refreshHouseholds: getHouseholds,
   };
 }

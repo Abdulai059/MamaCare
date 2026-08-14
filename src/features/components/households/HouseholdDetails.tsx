@@ -36,7 +36,7 @@ export const HouseholdDetails = observer(function HouseholdDetails({
           </TouchableOpacity>
 
           <TouchableOpacity onPress={onBack} hitSlop={8}>
-            <Ionicons name="close" size={24} color={Colors.textGray} />
+            <Ionicons name="close" size={24} className="text-red-500" />
           </TouchableOpacity>
         </View>
       </View>
@@ -56,9 +56,9 @@ export const HouseholdDetails = observer(function HouseholdDetails({
           <TouchableOpacity
             onPress={onAddPerson}
             activeOpacity={0.8}
-            className="rounded-sm bg-brand-pink p-2"
+            className="rounded-sm bg-card-mint p-2"
           >
-            <Ionicons name="add" size={18} color="white" />
+            <Ionicons name="add" size={20} className="text-dark" />
           </TouchableOpacity>
         </View>
 
