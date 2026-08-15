@@ -1,6 +1,7 @@
 import { initializeAuth } from "@/state/auth";
 import { initializeHouseholds } from "@/services/households";
 import { initializePersons } from "@/services/persons";
+import { initializeCareEpisodes } from "@/services/careEpisodes";
 import { offlineSyncManager } from "@/services/offlineSync";
 // 1. Import the new location initializer
 import { initializeLocations } from "@/services/locations";
@@ -13,6 +14,7 @@ import { initializeLocations } from "@/services/locations";
  * 3. Initialize locations (Regions, Districts, Communities)
  * 4. Once locations are ready, initialize households
  * 5. Once households are ready, initialize persons
+ * 6. Once persons are ready, initialize care episodes
  */
 export async function initializeApp() {
   console.log("[App Init] Starting initialization sequence...");
@@ -36,6 +38,10 @@ export async function initializeApp() {
   // Step 5: Initialize persons (loads from storage and syncs)
   console.log("[App Init] Initializing persons...");
   await initializePersons();
+
+  // Step 6: Initialize care episodes (loads from storage and syncs)
+  console.log("[App Init] Initializing care episodes...");
+  await initializeCareEpisodes();
 
   console.log("[App Init] Initialization complete!");
 }

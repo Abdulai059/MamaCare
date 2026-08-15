@@ -66,7 +66,7 @@ export function CreateHouseholdModal({
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={handleClose}>
       <ScrollView
-        className="flex-1 bg-surface"
+        className="flex-1 bg-surface rounded-t-3xl"
         contentContainerStyle={{
           flexGrow: 1,
         }}

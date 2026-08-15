@@ -7,6 +7,7 @@ import { Colors } from "@/shared/constants/colors";
 import { Household } from "@/utils/types/household";
 import { PersonList } from "./PersonList";
 import { useAllPersons } from "@/hooks/query/useAllPersons";
+import { PregnancyEpisode } from "../pregnancy/pregnancyEpisode";
 
 interface HouseholdDetailsProps {
   household: Household;
@@ -21,6 +22,9 @@ export const HouseholdDetails = observer(function HouseholdDetails({
 }: HouseholdDetailsProps) {
   // Reactively fetch members with location details using household ID
   const persons = useAllPersons(household.id);
+
+  // Pregnancy care is tracked per-mother — pick the mother in this household
+  const mother = persons[0];
 
   return (
     <View>
@@ -64,6 +68,9 @@ export const HouseholdDetails = observer(function HouseholdDetails({
 
         {/* Render enriched persons list */}
         <PersonList persons={persons} />
+
+        {/* Pregnancy Episode — only render once a mother exists */}
+        {mother ? <PregnancyEpisode personId={mother.id} /> : null}
       </View>
     </View>
   );
