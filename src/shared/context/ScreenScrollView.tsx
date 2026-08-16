@@ -8,12 +8,9 @@ interface Props extends ScrollViewProps {
   className?: string;
 }
 
-export function ScreenScrollView({ children, className, ...rest }: Props) {
+export function ScreenScrollView({ children, className }: Props) {
   return (
-    <SafeAreaView
-      edges={["top", "bottom"]}
-      style={{ flex: 1, backgroundColor: "#fff" }}
-    >
+    <SafeAreaView edges={[]} style={{ flex: 1 }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{ flex: 1 }}

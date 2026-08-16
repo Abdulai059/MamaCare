@@ -44,24 +44,25 @@ function HouseholdsScreen() {
   };
 
   return (
-    <ScreenScrollView>
+    <>
       <HouseholdHeader onAdd={() => setShowCreateModal(true)} />
-
-      <View className="px-6 pb-8">
-        {selectedHousehold ? (
-          <HouseholdDetails
-            household={selectedHousehold}
-            onBack={handleBack}
-            onAddPerson={() => setShowPersonModal(true)}
-          />
-        ) : (
-          <HouseholdList
-            households={householdsList}
-            onSelect={handleSelectHousehold}
-          />
-        )}
-      </View>
-
+      <ScreenScrollView>
+        <View className="px-6 pb-8 ">
+          {selectedHousehold ? (
+            <HouseholdDetails
+              household={selectedHousehold}
+              onBack={handleBack}
+              onAddPerson={() => setShowPersonModal(true)}
+            />
+          ) : (
+            <HouseholdList
+              households={householdsList}
+              onSelect={handleSelectHousehold}
+            />
+          )}
+        </View>
+      </ScreenScrollView>
+      
       <CreateHouseholdModal
         visible={showCreateModal}
         onClose={() => setShowCreateModal(false)}
@@ -74,7 +75,7 @@ function HouseholdsScreen() {
           onClose={() => setShowPersonModal(false)}
         />
       ) : null}
-    </ScreenScrollView>
+    </>
   );
 }
 

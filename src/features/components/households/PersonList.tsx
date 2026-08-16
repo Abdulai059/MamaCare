@@ -21,7 +21,7 @@ export const PersonList = observer(function PersonList({
   }
 
   return (
-    <View className="overflow-hidden rounded-xl bg-white shadow-sm">
+    <View className="overflow-hidden">
       {persons.map((person) => {
         return (
           <Pressable

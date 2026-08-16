@@ -56,7 +56,7 @@ export default function AnimatedTabBar({
 
   return (
     <View
-      className="bg-white px-3.75 pt-2"
+      className="bg-gray-200 px-3.75 pt-2"
       style={{ paddingBottom: Math.max(insets.bottom, 12) + 10 }}
     >
       <View className="h-10 flex-row items-center justify-between">

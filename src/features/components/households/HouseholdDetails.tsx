@@ -28,11 +28,11 @@ export const HouseholdDetails = observer(function HouseholdDetails({
 
   return (
     <View>
-      <View className="mb-4 rounded-2xl bg-white p-2">
+      <View className="mb-4 rounded-md bg-white p-2">
         <View className="flex-row items-center justify-between">
           <TouchableOpacity onPress={() => {}} hitSlop={8}>
             <Text
-              className="rounded-sm bg-gray-300 px-4 py-1 text-sm text-brand-pink"
+              className="rounded-sm bg-brand-blue px-4 py-1 text-sm text-dark"
               style={{ fontFamily: "Poppins_600SemiBold" }}
             >
               Edit
@@ -66,11 +66,13 @@ export const HouseholdDetails = observer(function HouseholdDetails({
           </TouchableOpacity>
         </View>
 
-        {/* Render enriched persons list */}
-        <PersonList persons={persons} />
+        <View className="rounded-xl bg-white shadow-sm">
+          {/* Render enriched persons list */}
+          <PersonList persons={persons} />
 
-        {/* Pregnancy Episode — only render once a mother exists */}
-        {mother ? <PregnancyEpisode personId={mother.id} /> : null}
+          {/* Pregnancy Episode — only render once a mother exists */}
+          {mother ? <PregnancyEpisode personId={mother.id} /> : null}
+        </View>
       </View>
     </View>
   );

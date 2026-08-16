@@ -4,6 +4,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { observer } from "@legendapp/state/react";
 
 import { PregnancyRegistrationModal } from "@/features/components/pregnancy/PregnancyRegistrationModal";
+import { EpisodeDetails } from "./EpisodeDetails";
+import { CareJourneyTimeline } from "./CareJourneyTimeline";
 import { useCareEpisodes } from "@/hooks/query/useCareEpisodes";
 
 interface PregnancyEpisodeProps {
@@ -17,7 +19,7 @@ export const PregnancyEpisode = observer(function PregnancyEpisode({
   const { activeEpisode } = useCareEpisodes(personId);
 
   return (
-    <View className="rounded-2xl bg-white p-6">
+    <View className="p-4">
       <Text
         className="text-base text-gray-800 uppercase mb-1"
         style={{ fontFamily: "Poppins_600SemiBold" }}
@@ -26,36 +28,18 @@ export const PregnancyEpisode = observer(function PregnancyEpisode({
       </Text>
 
       {activeEpisode ? (
-        <View className="mb-4 gap-y-1.5">
-          <View className="flex-row items-center">
-            <Text className="text-xs font-semibold text-gray-400 w-28">
-              STATUS:
-            </Text>
-            <Text className="text-sm font-semibold text-green-600 flex-1">
-              {activeEpisode.status}
-            </Text>
-          </View>
+        <>
+          <EpisodeDetails episode={activeEpisode} />
 
-          <View className="flex-row items-center">
-            <Text className="text-xs font-semibold text-gray-400 w-28">
-              START DATE:
-            </Text>
-            <Text className="text-sm font-medium text-gray-700 flex-1">
-              {activeEpisode.start_date}
-            </Text>
-          </View>
-
-          {activeEpisode.expected_end_date ? (
-            <View className="flex-row items-center">
-              <Text className="text-xs font-semibold text-gray-400 w-28">
-                EXPECTED DUE:
-              </Text>
-              <Text className="text-sm font-medium text-gray-700 flex-1">
-                {activeEpisode.expected_end_date}
-              </Text>
-            </View>
-          ) : null}
-        </View>
+          <CareJourneyTimeline
+            steps={[
+              { label: "Registration", value: "Completed", done: true },
+              { label: "Next Appointment", value: "—", done: false },
+              { label: "Visits", value: "0 recorded", done: false },
+              { label: "Referrals", value: "0 recorded", done: false },
+            ]}
+          />
+        </>
       ) : (
         <Text className="text-sm text-gray-400 mb-4">
           No active care episode
@@ -82,9 +66,7 @@ export const PregnancyEpisode = observer(function PregnancyEpisode({
         visible={showCareModal}
         personId={personId}
         onClose={() => setShowCareModal(false)}
-        onSubmit={() => {
-          setShowCareModal(false);
-        }}
+        onSubmit={() => setShowCareModal(false)}
       />
     </View>
   );
