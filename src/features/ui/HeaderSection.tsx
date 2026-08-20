@@ -36,7 +36,16 @@ export function HeaderSection({ onNotificationPress }: HeaderSectionProps) {
               resizeMode="cover"
             />
           ) : (
-            <View className="w-12 h-12 rounded-full bg-[#c8c1ef] items-center justify-center">
+            <View
+              className="w-11 h-11 rounded-full bg-white items-center justify-center"
+              style={{
+                shadowColor: "#000",
+                shadowOpacity: 0.08,
+                shadowRadius: 6,
+                shadowOffset: { width: 0, height: 2 },
+                elevation: 2,
+              }}
+            >
               <Ionicons name="person" size={24} color="#fff" />
             </View>
           )}

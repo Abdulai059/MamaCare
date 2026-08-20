@@ -10,7 +10,6 @@ import {
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Colors } from "@/shared/constants/colors";
 
 if (
   Platform.OS === "android" &&
@@ -19,12 +18,12 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const ICON_SIZE = 21; // was 25 — change this one number to resize all icons
+const ICON_SIZE = 20;
 
 const ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
   index: "home-outline",
   households: "key-outline",
-  mothers: "grid-outline",
+  mother: "grid-outline",
   tasks: "checkbox-outline",
   profile: "person-outline",
 };
@@ -32,7 +31,7 @@ const ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
 const LABELS: Record<string, string> = {
   index: "Home",
   households: "Add House",
-  mothers: "Mothers",
+  mother: "Mothers",
   tasks: "Tasks",
   profile: "Profile",
 };
@@ -56,74 +55,78 @@ export default function AnimatedTabBar({
 
   return (
     <View
-      className="bg-gray-200 px-3.75 pt-2"
-      style={{ paddingBottom: Math.max(insets.bottom, 12) + 10 }}
+      className="absolute left-6 right-6 flex-row items-center justify-between bg-white/80 rounded-full px-3 py-2"
+      style={{
+        bottom: Math.max(insets.bottom, 12),
+        shadowColor: "#000",
+        shadowOpacity: 0.08,
+        shadowRadius: 10,
+        shadowOffset: { width: 0, height: 4 },
+        elevation: 4,
+      }}
     >
-      <View className="h-10 flex-row items-center justify-between">
-        {state.routes.map((route, index) => {
-          const active = index === activeIndex;
+      {state.routes.map((route, index) => {
+        const active = index === activeIndex;
 
-          const onPress = () => {
-            if (active) return;
+        const onPress = () => {
+          if (active) return;
 
-            // Animate the width change before navigation
-            LayoutAnimation.configureNext(
-              LayoutAnimation.create(
-                250,
-                LayoutAnimation.Types.easeInEaseOut,
-                LayoutAnimation.Properties.scaleXY,
-              ),
-            );
-
-            const event = navigation.emit({
-              type: "tabPress",
-              target: route.key,
-              canPreventDefault: true,
-            });
-
-            if (!event.defaultPrevented) {
-              navigation.navigate(route.name);
-            }
-          };
-
-          const onLongPress = () => {
-            navigation.emit({
-              type: "tabLongPress",
-              target: route.key,
-            });
-          };
-
-          return (
-            <Pressable
-              key={route.key}
-              onPress={onPress}
-              onLongPress={onLongPress}
-              className={`h-10 rounded-full flex-row items-center justify-center overflow-hidden ${
-                active ? "w-27.5 px-4" : "w-13.5 bg-transparent"
-              }`}
-              style={active ? { backgroundColor: Colors.brandBlue } : undefined}
-            >
-              <View className="">
-                <Ionicons
-                  name={
-                    active
-                      ? getActiveIcon(getIcon(route.name))
-                      : getIcon(route.name)
-                  }
-                  size={ICON_SIZE}
-                  color={active ? "#FFFFFF" : "#161616"}
-                />
-              </View>
-
-              {active && (
-                <Text className="ml-2 text-slate-800 text-sm font-semibold">
-                  {LABELS[route.name] ?? route.name}
-                </Text>
-              )}
-            </Pressable>
+          LayoutAnimation.configureNext(
+            LayoutAnimation.create(
+              250,
+              LayoutAnimation.Types.easeInEaseOut,
+              LayoutAnimation.Properties.scaleXY,
+            ),
           );
-        })}
-      </View>
+
+          const event = navigation.emit({
+            type: "tabPress",
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
+        const onLongPress = () => {
+          navigation.emit({
+            type: "tabLongPress",
+            target: route.key,
+          });
+        };
+
+        return (
+          <Pressable
+            key={route.key}
+            onPress={onPress}
+            onLongPress={onLongPress}
+            className={`flex-row items-center justify-center rounded-full overflow-hidden ${
+              active ? "bg-pink-500 px-4 py-2" : "w-11 h-11"
+            }`}
+          >
+            <Ionicons
+              name={
+                active
+                  ? getActiveIcon(getIcon(route.name))
+                  : getIcon(route.name)
+              }
+              size={ICON_SIZE}
+              color={active ? "#fff" : "#9ca3af"}
+            />
+
+            {active && (
+              <Text
+                className="ml-1.5 text-white text-sm"
+                style={{ fontFamily: "Poppins_600SemiBold" }}
+              >
+                {LABELS[route.name] ?? route.name}
+              </Text>
+            )}
+          </Pressable>
+        );
+      })}
     </View>
   );
 }
@@ -131,8 +134,6 @@ export default function AnimatedTabBar({
 function getIcon(routeName: string): keyof typeof Ionicons.glyphMap {
   const icon = ICONS[routeName];
   if (!icon && __DEV__) {
-    // If you see this, routeName below is the real key you need to use
-    // in ICONS / LABELS — it likely doesn't match what's currently there.
     console.warn(
       `[AnimatedTabBar] No icon mapped for route.name="${routeName}". ` +
         `Current ICONS keys: ${Object.keys(ICONS).join(", ")}`,
@@ -151,6 +152,7 @@ function getActiveIcon(
     "checkbox-outline": "checkbox",
     "person-outline": "person",
     "grid-outline": "grid",
+    "key-outline": "key",
     "trash-outline": "trash",
   };
 

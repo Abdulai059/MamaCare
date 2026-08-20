@@ -46,8 +46,9 @@ function HouseholdsScreen() {
   return (
     <>
       <HouseholdHeader onAdd={() => setShowCreateModal(true)} />
+
       <ScreenScrollView>
-        <View className="px-6 pb-8 ">
+        <View className="px-6 pb-8 pt-3">
           {selectedHousehold ? (
             <HouseholdDetails
               household={selectedHousehold}
@@ -62,7 +63,7 @@ function HouseholdsScreen() {
           )}
         </View>
       </ScreenScrollView>
-      
+
       <CreateHouseholdModal
         visible={showCreateModal}
         onClose={() => setShowCreateModal(false)}

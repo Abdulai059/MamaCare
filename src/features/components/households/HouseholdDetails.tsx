@@ -28,42 +28,47 @@ export const HouseholdDetails = observer(function HouseholdDetails({
 
   return (
     <View>
-      <View className="mb-4 rounded-md bg-white p-2">
-        <View className="flex-row items-center justify-between">
-          <TouchableOpacity onPress={() => {}} hitSlop={8}>
-            <Text
-              className="rounded-sm bg-brand-blue px-4 py-1 text-sm text-dark"
-              style={{ fontFamily: "Poppins_600SemiBold" }}
-            >
-              Edit
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={onBack} hitSlop={8}>
-            <Ionicons name="close" size={24} className="text-red-500" />
-          </TouchableOpacity>
-        </View>
-      </View>
-
       {/* Members */}
       <View className="mb-4">
-        <View className="mb-4 flex-row items-center justify-between">
+        <View className="mb-4 flex-row items-center justify-between p-2">
           <Text
             className="text-base text-gray-800 uppercase"
-            style={{
-              fontFamily: "Poppins_600SemiBold",
-            }}
+            style={{ fontFamily: "Poppins_600SemiBold" }}
           >
             Mother Details
           </Text>
 
-          <TouchableOpacity
-            onPress={onAddPerson}
-            activeOpacity={0.8}
-            className="rounded-sm bg-card-mint p-2"
-          >
-            <Ionicons name="add" size={20} className="text-dark" />
-          </TouchableOpacity>
+          <View className="flex-row items-center gap-2 rounded-2xl bg-gray-100 p-2">
+            {/* <TouchableOpacity onPress={() => {}} hitSlop={8}>
+              <Text
+                className="rounded-full bg-brand-blue px-4 py-1 text-sm text-dark"
+                style={{ fontFamily: "Poppins_600SemiBold" }}
+              >
+                Edit
+              </Text>
+            </TouchableOpacity> */}
+
+            <TouchableOpacity onPress={onAddPerson} activeOpacity={0.8}>
+              <View className="flex-row items-center gap-1 rounded-full bg-brand-blue px-3 py-1.75">
+                <Ionicons name="add" size={18} color="#1a1a1a" />
+                <Text
+                  className="text-sm text-dark"
+                  style={{ fontFamily: "Poppins_600SemiBold" }}
+                >
+                  Mother
+                </Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={onBack} hitSlop={8}>
+              <Text
+                className="rounded-full bg-red-500 px-4 py-1.75 text-sm text-white"
+                style={{ fontFamily: "Poppins_600SemiBold" }}
+              >
+                Close
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View className="rounded-xl bg-white shadow-sm">

@@ -50,7 +50,7 @@ export const PersonList = observer(function PersonList({
               <TouchableOpacity
                 onPress={() => onPressPerson?.(person)}
                 hitSlop={8}
-                className="flex-row items-center gap-x-1 bg-[#f157cd] rounded-md px-2 py-2"
+                className="flex-row items-center gap-x-1 bg-[#f157cd] rounded-full px-2 py-1.75"
               >
                 <Text
                   className="text-xs text-white"

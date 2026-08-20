@@ -18,39 +18,21 @@ import { HeaderSection } from "@/features/ui/HeaderSection";
 
 export default function HomeScreen(): React.JSX.Element {
   const router = useRouter();
-  // const { data: mothers = [], isLoading: mothersLoading } = useAllMothers();
-  // const { data: households = [], isLoading: householdsLoading } =
-  //   useHouseholds();
-  const mothers = [];
-  const households = [];
-  const mothersLoading = false;
-  const householdsLoading = false;
-
-  const isLoading = mothersLoading || householdsLoading;
-  const totalMothers = mothers.length;
-  const pregnantCount = mothers.filter((m) => m.is_pregnant).length;
-  const totalHouseholds = households.length;
-
-  const handleAddHousehold = () => {
-    router.push("/mothers/create");
-  };
-
-  const handleAddMother = () => {
-    router.push("/mothers/create");
-  };
-
-  const handleViewMothers = () => {
-    router.push("/mothers");
-  };
 
   return (
-    <SafeAreaView
-      edges={["top", "bottom"]}
+    <LinearGradient
+      colors={["#dff3ea", "#fbe6f0"]}
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 1 }}
       style={{ flex: 1 }}
-      className="bg-surface-bg"
     >
-      {/* Header */}
-      {/* <LinearGradient
+      <SafeAreaView
+        edges={["top", "bottom"]}
+        style={{ flex: 1 }}
+        className="bg-surface-bg"
+      >
+        {/* Header */}
+        {/* <LinearGradient
         colors={["#ffe2cc", "#c9e8d9"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -86,13 +68,14 @@ export default function HomeScreen(): React.JSX.Element {
         </View>
       </LinearGradient> */}
 
-      <View>
-        <HeaderSection />
-      </View>
+        <View>
+          <HeaderSection />
+        </View>
 
-      <View>
-        <DoctorsCarousel />
-      </View>
-    </SafeAreaView>
+        <View>
+          <DoctorsCarousel />
+        </View>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }

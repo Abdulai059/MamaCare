@@ -24,7 +24,7 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="mothers"
+        name="mother"
         options={{
           title: "Mothers",
         }}

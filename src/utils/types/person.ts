@@ -1,4 +1,5 @@
 import { Syncable } from "@/utils/types/sync";
+import type { CareEpisode } from "@/utils/types/careEpisode";
 
 // =========================================================
 // 1. BASE LOCATION ENTITIES
@@ -67,4 +68,7 @@ export interface PersonAllLocation extends Person {
   community?: Community | null;
   district?: District | null;
   region?: Region | null;
+  careEpisodes?: CareEpisode[];
+  activeCareEpisode?: CareEpisode | null;
+  is_pregnant?: boolean;
 }
