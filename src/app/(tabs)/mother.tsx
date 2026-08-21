@@ -9,6 +9,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { observer } from "@legendapp/state/react";
 
 import StatCard from "@/features/ui/StatCard";
 import { MothersList } from "@/features/components/mothers/MothersList";
@@ -16,7 +17,7 @@ import AddMotherCard from "@/features/components/mothers/AddMotherCard";
 import { useAllPersons } from "@/hooks/query/useAllPersons";
 import { LinearGradient } from "expo-linear-gradient";
 
-export default function MothersScreen(): React.JSX.Element {
+const MothersScreen = observer(function MothersScreen(): React.JSX.Element {
   const router = useRouter();
   const [search, setSearch] = useState("");
 
@@ -159,4 +160,6 @@ export default function MothersScreen(): React.JSX.Element {
       </SafeAreaView>
     </LinearGradient>
   );
-}
+});
+
+export default MothersScreen;

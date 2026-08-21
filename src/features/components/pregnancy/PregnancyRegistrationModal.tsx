@@ -12,7 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "@/shared/constants/colors";
 import InputField from "@/features/ui/InputField";
-import { createCareEpisode } from "@/services/careEpisodes";
+import { createCareEpisode } from "@/services/careEpisodes.operations";
 
 interface PregnancyRegistrationModalProps {
   visible: boolean;

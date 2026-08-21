@@ -1,17 +1,12 @@
 import { use$ } from "@legendapp/state/react";
-import {
-  persons$,
-  isSyncing$,
-  lastSyncTime$,
-  getPersonsByHousehold,
-} from "@/state/persons";
+import { persons$, isSyncing$, lastSyncTime$ } from "@/state/persons";
 import {
   createPerson,
   updatePerson,
   deletePerson,
-  syncPersonsToSupabase,
-  getPersons,
-} from "@/services/persons";
+} from "@/services/persons.operations";
+import { syncPersonsToSupabase } from "@/services/sync/persons.sync";
+import { selectActivePersons } from "@/selectors/persons/person.selectors";
 import type { Person } from "@/utils/types/person";
 
 /**
@@ -26,9 +21,9 @@ export function usePersons() {
 
   // Convert dictionary into a sorted array of active persons
   // Note: No useMemo needed - LegendApp's observer handles reactivity
-  const personsList = Object.values(persons as Record<string, Person>)
-    .filter((p) => !p.deleted_at)
-    .sort((a, b) => (a.created_at || "").localeCompare(b.created_at || ""));
+  const personsList = selectActivePersons(
+    persons as Record<string, Person>,
+  ).sort((a, b) => (a.created_at || "").localeCompare(b.created_at || ""));
 
   return {
     persons: persons as Record<string, Person>,
@@ -39,8 +34,6 @@ export function usePersons() {
     createPerson,
     updatePerson,
     deletePerson,
-    getPersonsByHousehold,
     syncNow: syncPersonsToSupabase,
-    refreshPersons: getPersons,
   };
 }

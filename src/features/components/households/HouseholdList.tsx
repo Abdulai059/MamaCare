@@ -1,7 +1,9 @@
 import React from "react";
 import { FlatList, View } from "react-native";
+import { observer } from "@legendapp/state/react";
 import { Household } from "@/utils/types/household";
-import { getPersonsByHousehold } from "@/services/persons";
+import { usePersons } from "@/hooks/persons/usePersons";
+import { selectPersonsByHousehold } from "@/selectors/persons/person.selectors";
 import { EmptyState } from "@/features/ui/EmptyState";
 import { HouseholdCard } from "./HouseholdCard";
 
@@ -10,7 +12,12 @@ interface HouseholdListProps {
   onSelect: (householdId: string) => void;
 }
 
-export function HouseholdList({ households, onSelect }: HouseholdListProps) {
+export const HouseholdList = observer(function HouseholdList({
+  households,
+  onSelect,
+}: HouseholdListProps) {
+  const { persons } = usePersons();
+
   if (households.length === 0) {
     return (
       <EmptyState
@@ -27,7 +34,7 @@ export function HouseholdList({ households, onSelect }: HouseholdListProps) {
       data={households}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => {
-        const memberCount = getPersonsByHousehold(item.id).length;
+        const memberCount = selectPersonsByHousehold(persons, item.id).length;
 
         return (
           <HouseholdCard
@@ -39,4 +46,4 @@ export function HouseholdList({ households, onSelect }: HouseholdListProps) {
       }}
     />
   );
-}
+});

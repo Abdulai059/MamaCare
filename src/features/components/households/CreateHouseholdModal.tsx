@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Alert, Modal, ScrollView, View } from "react-native";
 
-import { createHousehold } from "@/services/households";
+import { createHousehold } from "@/services/households.operations";
 import { AppInput } from "@/features/ui/AppInput";
 import { ModalHeader } from "@/features/ui/ModalHeader";
 import { ModalActions } from "@/features/ui/ModalActions";

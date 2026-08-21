@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 
-import { createPerson } from "@/services/persons";
+import { createPerson } from "@/services/persons.operations";
 import { AppInput } from "@/features/ui/AppInput";
 import { ModalHeader } from "@/features/ui/ModalHeader";
 import { ModalActions } from "@/features/ui/ModalActions";

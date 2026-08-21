@@ -1,5 +1,6 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { observer } from "@legendapp/state/react";
 import { Colors } from "@/shared/constants/colors";
 import { Household } from "@/utils/types/household";
 import { useAllPersons } from "@/hooks/query/useAllPersons";
@@ -11,7 +12,7 @@ interface HouseholdCardProps {
   onPress: () => void;
 }
 
-export function HouseholdCard({
+export const HouseholdCard = observer(function HouseholdCard({
   household,
   memberCount,
   onPress,
@@ -70,4 +71,4 @@ export function HouseholdCard({
       </TouchableOpacity>
     </LinearGradient>
   );
-}
+});
